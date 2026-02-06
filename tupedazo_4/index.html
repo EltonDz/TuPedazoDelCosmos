@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TuPedazoDeCosmos.com</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+  <script src="https://www.paypal.com/sdk/js?client-id=Ae78PjwLRmjiwKIbKWg3OA4Achz9gC24B2j1KcMvr1K9KiG1CeXEyzqXvtM-XOBHODi4K8p6DZk1Di0r&currency=USD"></script>
+  <style>
+    :root {
+      --nasa-dark-blue: #0b1526;
+      --nasa-blue: #0b3d91;
+      --nasa-light-blue: #1e90ff;
+      --nasa-cyan: #00d4ff;
+      --nasa-accent: #4fc3f7;
+      --nasa-glow: rgba(30, 144, 255, 0.3);
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, var(--nasa-dark-blue) 0%, #0d2137 50%, #0b1526 100%);
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(2px 2px at 20px 30px, white, transparent),
+        radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1px 1px at 90px 40px, white, transparent),
+        radial-gradient(2px 2px at 160px 120px, rgba(255,255,255,0.9), transparent),
+        radial-gradient(1px 1px at 230px 80px, white, transparent),
+        radial-gradient(2px 2px at 300px 150px, rgba(255,255,255,0.7), transparent),
+        radial-gradient(1px 1px at 350px 200px, white, transparent);
+      background-repeat: repeat;
+      background-size: 400px 400px;
+      animation: twinkle 5s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    #stellarium-container {
+      height: 85vh;
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (max-width: 768px) {
+      #stellarium-container {
+        height: 70vh;
+      }
+    }
+
+    .main-header {
+      background: linear-gradient(180deg, var(--nasa-blue) 0%, var(--nasa-dark-blue) 100%);
+      border-bottom: 2px solid var(--nasa-cyan);
+      box-shadow: 0 4px 20px var(--nasa-glow);
+      position: relative;
+      z-index: 100;
+    }
+
+    .logo-container {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      overflow: hidden;
+      background: rgba(255,255,255,0.1);
+    }
+
+    .logo-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .logo-container:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px var(--nasa-glow);
+    }
+
+    /* IMPORTANTE: z-index alto para nav-bar */
+    .nav-bar {
+      background: linear-gradient(90deg, rgba(11, 61, 145, 0.95) 0%, rgba(30, 144, 255, 0.85) 50%, rgba(11, 61, 145, 0.95) 100%);
+      border-bottom: 1px solid var(--nasa-cyan);
+      backdrop-filter: blur(10px);
+      position: relative;
+      z-index: 9999;
+    }
+
+    .nav-btn {
+      background: transparent;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .nav-btn:hover::before {
+      left: 100%;
+    }
+
+    .nav-btn:hover {
+      background: rgba(79, 195, 247, 0.3);
+      text-shadow: 0 0 10px var(--nasa-cyan);
+    }
+
+    .nav-btn:active {
+      background: rgba(79, 195, 247, 0.15);
+      opacity: 0.7;
+      transform: scale(0.98);
+    }
+
+    /* IMPORTANTE: Dropdown de idioma con z-index muy alto */
+    .language-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .language-dropdown-content {
+      display: none;
+      position: absolute;
+      background: var(--nasa-dark-blue);
+      border: 1px solid var(--nasa-cyan);
+      border-radius: 8px;
+      min-width: 150px;
+      z-index: 99999;
+      top: 100%;
+      right: 0;
+      box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
+    }
+
+    .language-dropdown:hover .language-dropdown-content {
+      display: block;
+    }
+
+    .language-option {
+      padding: 12px 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+      color: white;
+    }
+
+    .language-option:hover {
+      background: rgba(79, 195, 247, 0.3);
+    }
+
+    .nasa-btn {
+      background: linear-gradient(135deg, var(--nasa-blue) 0%, var(--nasa-light-blue) 100%);
+      color: white;
+      padding: 12px 24px;
+      border: 1px solid var(--nasa-cyan);
+      border-radius: 8px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px var(--nasa-glow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nasa-btn:hover {
+      background: linear-gradient(135deg, var(--nasa-light-blue) 0%, var(--nasa-cyan) 100%);
+      box-shadow: 0 6px 25px rgba(0, 212, 255, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .nasa-btn:active {
+      opacity: 0.7;
+      transform: translateY(0) scale(0.98);
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(5px);
+      z-index: 100000;
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background: linear-gradient(135deg, var(--nasa-dark-blue) 0%, #0d2137 100%);
+      border: 2px solid var(--nasa-cyan);
+      border-radius: 16px;
+      padding: 30px;
+      max-width: 800px;
+      width: 90%;
+      max-height: 85vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 0 50px var(--nasa-glow), inset 0 0 30px rgba(0, 212, 255, 0.1);
+      animation: slideIn 0.4s ease;
+    }
+
+    @keyframes slideIn {
+      from { 
+        opacity: 0;
+        transform: translateY(-50px) scale(0.9);
+      }
+      to { 
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: transparent;
+      border: 2px solid var(--nasa-cyan);
+      color: var(--nasa-cyan);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .modal-close:hover {
+      background: var(--nasa-cyan);
+      color: var(--nasa-dark-blue);
+      transform: rotate(90deg);
+    }
+
+    .modal-title {
+      color: var(--nasa-cyan);
+      font-size: 24px;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(79, 195, 247, 0.3);
+    }
+
+    .nasa-input {
+      background: rgba(11, 61, 145, 0.3);
+      border: 1px solid rgba(79, 195, 247, 0.5);
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: white;
+      width: 100%;
+      transition: all 0.3s ease;
+    }
+
+    .nasa-input:focus {
+      outline: none;
+      border-color: var(--nasa-cyan);
+      box-shadow: 0 0 15px var(--nasa-glow);
+      background: rgba(11, 61, 145, 0.5);
+    }
+
+    .nasa-input::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .nasa-card {
+      background: linear-gradient(135deg, rgba(11, 61, 145, 0.4) 0%, rgba(13, 33, 55, 0.6) 100%);
+      border: 1px solid rgba(79, 195, 247, 0.3);
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .faq-item {
+      border-bottom: 1px solid rgba(79, 195, 247, 0.2);
+      padding: 15px 0;
+    }
+
+    .faq-question {
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--nasa-cyan);
+      font-weight: 500;
+    }
+
+    .faq-answer {
+      margin-top: 10px;
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.6;
+    }
+
+    .glow-text {
+      text-shadow: 0 0 10px var(--nasa-cyan), 0 0 20px var(--nasa-glow);
+    }
+
+    /* Estilos para selección de certificados */
+    .certificate-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    @media (max-width: 600px) {
+      .certificate-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .certificate-option {
+      position: relative;
+      cursor: pointer;
+      border: 3px solid transparent;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      background: rgba(11, 61, 145, 0.3);
+      aspect-ratio: 1.414;
+    }
+
+    .certificate-option:hover {
+      border-color: var(--nasa-cyan);
+      transform: scale(1.02);
+      box-shadow: 0 0 25px var(--nasa-glow);
+    }
+
+    .certificate-option.selected {
+      border-color: #ffd700;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+    }
+
+    .certificate-option img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .certificate-option:hover img {
+      transform: scale(1.05);
+    }
+
+    .certificate-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.9));
+      padding: 20px 10px 10px;
+      text-align: center;
+      color: white;
+      font-weight: 600;
+    }
+
+    .certificate-check {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 30px;
+      height: 30px;
+      background: #ffd700;
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-size: 16px;
+    }
+
+    .certificate-option.selected .certificate-check {
+      display: flex;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 5px var(--nasa-glow); }
+      50% { box-shadow: 0 0 20px var(--nasa-cyan); }
+    }
+
+    .certificate-option:not(.selected):hover {
+      animation: pulse-glow 1.5s infinite;
+    }
+
+    .download-panel {
+      text-align: center;
+      padding: 30px;
+    }
+
+    .download-icon {
+      font-size: 80px;
+      color: #4ade80;
+      margin-bottom: 20px;
+      animation: bounce 1s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .download-btn {
+      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+      color: white;
+      padding: 15px 40px;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .download-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(34, 197, 94, 0.5);
+    }
+
+    .process-steps {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: rgba(11, 61, 145, 0.3);
+      border-radius: 20px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .step.active {
+      background: var(--nasa-blue);
+      color: var(--nasa-cyan);
+    }
+
+    .step.completed {
+      background: rgba(34, 197, 94, 0.3);
+      color: #4ade80;
+    }
+
+    .step-number {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 12px;
+    }
+
+    .step.active .step-number,
+    .step.completed .step-number {
+      background: currentColor;
+      color: var(--nasa-dark-blue);
+    }
+
+    .resumen-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(79, 195, 247, 0.2);
+    }
+
+    .resumen-total {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 0;
+      font-size: 1.2em;
+      font-weight: bold;
+      color: var(--nasa-cyan);
+      border-top: 2px solid var(--nasa-cyan);
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body class="text-white min-h-screen flex flex-col">
+  
+  <!-- Header Principal con Logo -->
+  <header class="main-header p-4">
+    <div class="container mx-auto flex items-center justify-between">
+      <!-- Logo -->
+      <div class="logo-container">
+        <img src="logo.png" alt="Logo" onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'text-cyan-400 text-xs\'>LOGO</span>';">
+      </div>
+      
+      <!-- Título -->
+      <div class="text-center flex-1 px-4">
+        <h1 class="text-3xl md:text-4xl font-bold glow-text">TuPedazoDelCosmos.com</h1>
+        <p class="text-sm md:text-base text-blue-200 mt-1" data-translate="tagline">Explora el cielo, elige tu objeto astronómico y hazlo tuyo.</p>
+      </div>
+      
+      <div class="w-20"></div>
+    </div>
+  </header>
+
+  <!-- Barra de Navegación -->
+  <nav class="nav-bar py-2">
+    <div class="container mx-auto flex flex-wrap justify-center items-center gap-2 md:gap-4">
+      <button class="nav-btn" onclick="openModal('inicio')">
+        <i class="fas fa-home mr-2"></i><span data-translate="nav_inicio">Inicio</span>
+      </button>
+      <button class="nav-btn" onclick="openModal('rastrear')">
+        <i class="fas fa-search-location mr-2"></i><span data-translate="nav_rastrear">Rastrear</span>
+      </button>
+      <button class="nav-btn" onclick="openModal('faq')">
+        <i class="fas fa-question-circle mr-2"></i><span data-translate="nav_faq">FAQ</span>
+      </button>
+      <button class="nav-btn" onclick="openModal('pedido')">
+        <i class="fas fa-shopping-cart mr-2"></i><span data-translate="nav_pedido">Pedido</span>
+      </button>
+      <button class="nav-btn" onclick="openModal('contacto')">
+        <i class="fas fa-envelope mr-2"></i><span data-translate="nav_contacto">Contacto</span>
+      </button>
+      
+      <!-- Dropdown de Idioma -->
+      <div class="language-dropdown">
+        <button class="nav-btn">
+          <i class="fas fa-globe mr-2"></i><span data-translate="nav_idioma">Idioma</span>
+          <i class="fas fa-chevron-down ml-2 text-xs"></i>
+        </button>
+        <div class="language-dropdown-content">
+          <div class="language-option" onclick="changeLanguage('es')">
+            <span>🇪🇸</span> Español
+          </div>
+          <div class="language-option" onclick="changeLanguage('en')">
+            <span>🇺🇸</span> English
+          </div>
+          <div class="language-option" onclick="changeLanguage('pt')">
+            <span>🇧🇷</span> Português
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Modal / Ventana Emergente -->
+  <div id="modal" class="modal-overlay" onclick="closeModalOutside(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal()">
+        <i class="fas fa-times"></i>
+      </button>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <main class="p-4 flex-1 flex flex-col gap-6 relative z-10">
+    <!-- Stellarium Web Viewer -->
+    <div id="stellarium-container" class="w-full mb-8 rounded-lg overflow-hidden border-2 border-blue-500 nasa-card">
+      <iframe 
+        src="https://stellarium-web.org/" 
+        class="w-full h-full" 
+        frameborder="0" 
+        allowfullscreen>
+      </iframe>
+    </div>
+
+    <!-- Instrucciones -->
+    <div class="nasa-card p-6 rounded-lg">
+      <h2 class="text-xl font-semibold mb-4 text-blue-300 glow-text" data-translate="instrucciones_titulo">
+        <i class="fas fa-star mr-2"></i>¿Cómo seleccionar tu estrella?
+      </h2>
+      <ol class="list-decimal pl-5 space-y-2 text-gray-200">
+        <li data-translate="instruccion_1">Navega por el cielo estelar con el visor interactivo.</li>
+        <li data-translate="instruccion_2">Haz clic sobre el objeto que te interese.</li>
+        <li data-translate="instruccion_3">En la esquina superior izquierda verás el nombre del objeto, su RA (Ascensión Recta) y Dec (Declinación).</li>
+        <li data-translate="instruccion_4">Copia esos datos manualmente en el formulario de abajo para generar tu certificado.</li>
+      </ol>
+    </div>
+
+    <!-- Formulario de registro -->
+    <form id="registroForm" class="grid gap-4 nasa-card p-6 rounded-lg w-full max-w-xl mx-auto">
+      <h3 class="text-xl font-semibold text-center text-blue-300 mb-4" data-translate="form_titulo">
+        <i class="fas fa-certificate mr-2"></i>Registra tu Estrella
+      </h3>
+      <input type="text" name="nombre" placeholder="Tu nombre" class="nasa-input" required />
+      <input type="text" name="objeto" placeholder="Nombre del objeto (estrella original)" class="nasa-input" required />
+      <input type="text" name="ra" placeholder="RA (ej. 14h 15m 39s)" class="nasa-input" required />
+      <input type="text" name="dec" placeholder="Dec (ej. -60º 50' 2&quot;)" class="nasa-input" required />
+      <input type="text" name="magnitud" placeholder="Magnitud aparente (ej. 4.5)" class="nasa-input" />
+      <input type="text" name="nuevoNombre" placeholder="Renombra tu estrella" class="nasa-input" required />
+      <div class="flex flex-col gap-4 items-center mt-4">
+        <button type="button" class="nasa-btn w-full" onclick="validarYMostrarCertificados()">
+          <i class="fas fa-arrow-right mr-2"></i>Continuar - Elegir Certificado
+        </button>
+      </div>
+    </form>
+
+    <!-- Lista de clientes -->
+    <div class="nasa-card p-6 rounded-lg mt-6">
+      <h2 class="text-xl font-semibold mb-4 text-blue-300 glow-text" data-translate="clientes_titulo">
+        <i class="fas fa-users mr-2"></i>Clientes que han adquirido su astro:
+      </h2>
+      <ul id="listaClientes" class="list-disc pl-5 space-y-2 text-gray-200"></ul>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center p-4 border-t border-blue-800 bg-opacity-50 relative z-10">
+    <p class="text-blue-300 text-sm">© 2026 TuPedazoDelCosmos.com - <span data-translate="footer_derechos">Todos los derechos reservados</span></p>
+  </footer>
+
+  <script>
+    // ==================== VARIABLES GLOBALES ====================
+    let selectedCertificate = null;
+    let formData = {};
+    let clientes = JSON.parse(localStorage.getItem("clientes")) || [];
+    let currentLanguage = localStorage.getItem('language') || 'es';
+
+    // ==================== TRADUCCIONES ====================
+    const translations = {
+      es: {
+        tagline: "Explora el cielo, elige tu objeto astronómico y hazlo tuyo.",
+        nav_inicio: "Inicio",
+        nav_rastrear: "Rastrear",
+        nav_faq: "FAQ",
+        nav_pedido: "Pedido",
+        nav_contacto: "Contacto",
+        nav_idioma: "Idioma",
+        instrucciones_titulo: "¿Cómo seleccionar tu estrella?",
+        instruccion_1: "Navega por el cielo estelar con el visor interactivo.",
+        instruccion_2: "Haz clic sobre el objeto que te interese.",
+        instruccion_3: "En la esquina superior izquierda verás el nombre del objeto, su RA y Dec.",
+        instruccion_4: "Copia esos datos manualmente en el formulario de abajo.",
+        form_titulo: "Registra tu Estrella",
+        clientes_titulo: "Clientes que han adquirido su astro:",
+        footer_derechos: "Todos los derechos reservados",
+        modal_inicio_titulo: "Bienvenido a TuPedazoDeCosmos.com",
+        modal_inicio_contenido: `
+          <p class="mb-4">¡Bienvenido a la experiencia más única del universo!</p>
+          <p class="mb-4">En <strong>TuPedazoDeCosmos.com</strong> te ofrecemos la oportunidad de adoptar simbólicamente una estrella.</p>
+          <h4 class="text-blue-300 font-semibold mt-6 mb-2">¿Qué incluye tu compra?</h4>
+          <ul class="list-disc pl-5 space-y-2">
+            <li>Certificado digital personalizado en PDF</li>
+            <li>Coordenadas exactas de tu objeto celeste</li>
+            <li>Nombre personalizado para tu estrella</li>
+            <li>Registro permanente en nuestra base de datos</li>
+            <li>Número de serie único e irrepetible</li>
+          </ul>
+        `,
+        modal_rastrear_titulo: "Rastrear tu Pedido",
+        modal_faq_titulo: "Preguntas Frecuentes",
+        modal_pedido_titulo: "Estado de tu Pedido",
+        modal_contacto_titulo: "Contáctanos",
+        cert_titulo: "Elige tu Estilo de Certificado",
+        cert_descripcion: "Selecciona el diseño que más te guste:",
+        pago_titulo: "Procesar Pago",
+        descarga_titulo: "¡Tu Certificado está Listo!",
+        descarga_btn: "Descargar Certificado",
+        error_campos: "Por favor, completa todos los campos requeridos",
+        error_certificado: "Por favor, selecciona un certificado primero"
+      },
+      en: {
+        tagline: "Explore the sky, choose your astronomical object and make it yours.",
+        nav_inicio: "Home",
+        nav_rastrear: "Track",
+        nav_faq: "FAQ",
+        nav_pedido: "Order",
+        nav_contacto: "Contact",
+        nav_idioma: "Language",
+        instrucciones_titulo: "How to select your star?",
+        instruccion_1: "Navigate the starry sky with the interactive viewer.",
+        instruccion_2: "Click on the object you're interested in.",
+        instruccion_3: "In the upper left corner you'll see the object's name, its RA and Dec.",
+        instruccion_4: "Copy that data manually into the form below.",
+        form_titulo: "Register your Star",
+        clientes_titulo: "Customers who have acquired their star:",
+        footer_derechos: "All rights reserved",
+        modal_inicio_titulo: "Welcome to TuPedazoDeCosmos.com",
+        modal_inicio_contenido: `
+          <p class="mb-4">Welcome to the most unique experience in the universe!</p>
+          <p class="mb-4">At <strong>TuPedazoDeCosmos.com</strong> we offer you the opportunity to symbolically adopt a star.</p>
+          <h4 class="text-blue-300 font-semibold mt-6 mb-2">What's included?</h4>
+          <ul class="list-disc pl-5 space-y-2">
+            <li>Personalized digital PDF certificate</li>
+            <li>Exact coordinates of your celestial object</li>
+            <li>Custom name for your star</li>
+            <li>Permanent registration in our database</li>
+            <li>Unique serial number</li>
+          </ul>
+        `,
+        modal_rastrear_titulo: "Track your Order",
+        modal_faq_titulo: "Frequently Asked Questions",
+        modal_pedido_titulo: "Your Order Status",
+        modal_contacto_titulo: "Contact Us",
+        cert_titulo: "Choose your Certificate Style",
+        cert_descripcion: "Select the design you like best:",
+        pago_titulo: "Process Payment",
+        descarga_titulo: "Your Certificate is Ready!",
+        descarga_btn: "Download Certificate",
+        error_campos: "Please fill in all required fields",
+        error_certificado: "Please select a certificate first"
+      },
+      pt: {
+        tagline: "Explore o céu, escolha seu objeto astronômico e faça-o seu.",
+        nav_inicio: "Início",
+        nav_rastrear: "Rastrear",
+        nav_faq: "FAQ",
+        nav_pedido: "Pedido",
+        nav_contacto: "Contato",
+        nav_idioma: "Idioma",
+        instrucciones_titulo: "Como selecionar sua estrela?",
+        instruccion_1: "Navegue pelo céu estrelado com o visualizador interativo.",
+        instruccion_2: "Clique no objeto que lhe interessa.",
+        instruccion_3: "No canto superior esquerdo você verá o nome do objeto, sua AR e Dec.",
+        instruccion_4: "Copie esses dados manualmente no formulário abaixo.",
+        form_titulo: "Registre sua Estrela",
+        clientes_titulo: "Clientes que adquiriram seu astro:",
+        footer_derechos: "Todos os direitos reservados",
+        modal_inicio_titulo: "Bem-vindo ao TuPedazoDeCosmos.com",
+        modal_inicio_contenido: `
+          <p class="mb-4">Bem-vindo à experiência mais única do universo!</p>
+          <p class="mb-4">No <strong>TuPedazoDeCosmos.com</strong> oferecemos a oportunidade de adotar simbolicamente uma estrela.</p>
+          <h4 class="text-blue-300 font-semibold mt-6 mb-2">O que está incluído?</h4>
+          <ul class="list-disc pl-5 space-y-2">
+            <li>Certificado digital personalizado em PDF</li>
+            <li>Coordenadas exatas do seu objeto celeste</li>
+            <li>Nome personalizado para sua estrela</li>
+            <li>Registro permanente em nosso banco de dados</li>
+            <li>Número de série único</li>
+          </ul>
+        `,
+        modal_rastrear_titulo: "Rastrear seu Pedido",
+        modal_faq_titulo: "Perguntas Frequentes",
+        modal_pedido_titulo: "Status do seu Pedido",
+        modal_contacto_titulo: "Entre em Contato",
+        cert_titulo: "Escolha seu Estilo de Certificado",
+        cert_descripcion: "Selecione o design que mais gosta:",
+        pago_titulo: "Processar Pagamento",
+        descarga_titulo: "Seu Certificado está Pronto!",
+        descarga_btn: "Baixar Certificado",
+        error_campos: "Por favor, preencha todos os campos obrigatórios",
+        error_certificado: "Por favor, selecione um certificado primeiro"
+      }
+    };
+
+    // ==================== FUNCIONES DE IDIOMA ====================
+    function changeLanguage(lang) {
+      currentLanguage = lang;
+      localStorage.setItem('language', lang);
+      document.documentElement.lang = lang;
+      applyTranslations();
+      console.log('Idioma cambiado a:', lang);
+    }
+
+    function applyTranslations() {
+      const t = translations[currentLanguage];
+      document.querySelectorAll('[data-translate]').forEach(el => {
+        const key = el.getAttribute('data-translate');
+        if (t[key]) el.textContent = t[key];
+      });
+    }
+
+    // ==================== FUNCIONES DE MODAL ====================
+    function openModal(section) {
+      console.log('Abriendo modal:', section);
+      const modal = document.getElementById('modal');
+      const modalBody = document.getElementById('modal-body');
+      const t = translations[currentLanguage];
+      
+      let content = '';
+      
+      switch(section) {
+        case 'inicio':
+          content = `
+            <h2 class="modal-title"><i class="fas fa-star mr-2"></i>${t.modal_inicio_titulo}</h2>
+            <div>${t.modal_inicio_contenido}</div>
+          `;
+          break;
+        case 'rastrear':
+          content = `
+            <h2 class="modal-title"><i class="fas fa-search mr-2"></i>${t.modal_rastrear_titulo}</h2>
+            <p class="mb-4">Ingresa tu número de serie:</p>
+            <div class="flex gap-2 mb-4">
+              <input type="text" id="trackingInput" class="nasa-input flex-1" placeholder="COSMOS-XXXXXX">
+              <button class="nasa-btn" onclick="rastrearPedido()"><i class="fas fa-search"></i></button>
+            </div>
+            <div id="trackingResult" class="mt-4 p-4 rounded-lg hidden"></div>
+          `;
+          break;
+        case 'faq':
+          content = `
+            <h2 class="modal-title"><i class="fas fa-question-circle mr-2"></i>${t.modal_faq_titulo}</h2>
+            <div class="faq-item">
+              <div class="faq-question"><span>¿Es oficial el registro?</span></div>
+              <div class="faq-answer">El registro es simbólico y conmemorativo.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question"><span>¿Qué recibo al comprar?</span></div>
+              <div class="faq-answer">Un certificado PDF con nombre, coordenadas y número de serie único.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question"><span>¿Puedo regalar una estrella?</span></div>
+              <div class="faq-answer">¡Sí! Es un regalo perfecto para cualquier ocasión.</div>
+            </div>
+          `;
+          break;
+        case 'pedido':
+          content = `
+            <h2 class="modal-title"><i class="fas fa-shopping-cart mr-2"></i>${t.modal_pedido_titulo}</h2>
+            <div id="pedidosList" class="space-y-3"></div>
+          `;
+          setTimeout(cargarListaPedidos, 100);
+          break;
+        case 'contacto':
+          content = `
+            <h2 class="modal-title"><i class="fas fa-envelope mr-2"></i>${t.modal_contacto_titulo}</h2>
+            <form class="space-y-4">
+              <input type="text" class="nasa-input" placeholder="Tu nombre" required>
+              <input type="email" class="nasa-input" placeholder="Tu correo" required>
+              <textarea class="nasa-input" rows="4" placeholder="Tu mensaje..." required></textarea>
+              <button type="button" class="nasa-btn w-full" onclick="alert('¡Mensaje enviado!'); closeModal();">
+                <i class="fas fa-paper-plane mr-2"></i>Enviar
+              </button>
+            </form>
+          `;
+          break;
+      }
+      
+      modalBody.innerHTML = content;
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    function closeModalOutside(event) {
+      if (event.target.id === 'modal') closeModal();
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // ==================== VALIDAR FORMULARIO Y MOSTRAR CERTIFICADOS ====================
+    function validarYMostrarCertificados() {
+      const form = document.getElementById('registroForm');
+      const nombre = form.nombre.value.trim();
+      const objeto = form.objeto.value.trim();
+      const ra = form.ra.value.trim();
+      const dec = form.dec.value.trim();
+      const nuevoNombre = form.nuevoNombre.value.trim();
+      const magnitud = form.magnitud.value.trim() || 'N/A';
+      
+      if (!nombre || !objeto || !ra || !dec || !nuevoNombre) {
+        alert(translations[currentLanguage].error_campos);
+        return;
+      }
+      
+      formData = { nombre, objeto, ra, dec, nuevoNombre, magnitud };
+      mostrarSeleccionCertificados();
+    }
+
+    function mostrarSeleccionCertificados() {
+      const t = translations[currentLanguage];
+      const modal = document.getElementById('modal');
+      const modalBody = document.getElementById('modal-body');
+      
+      modalBody.innerHTML = `
+        <h2 class="modal-title"><i class="fas fa-certificate mr-2"></i>${t.cert_titulo}</h2>
+        
+        <div class="process-steps">
+          <div class="step completed"><span class="step-number">✓</span> Datos</div>
+          <div class="step active"><span class="step-number">2</span> Certificado</div>
+          <div class="step"><span class="step-number">3</span> Pago</div>
+          <div class="step"><span class="step-number">4</span> Descarga</div>
+        </div>
+        
+        <p class="text-gray-300 mb-4">${t.cert_descripcion}</p>
+        
+        <div class="certificate-grid">
+          ${[1,2,3,4].map(i => `
+            <div class="certificate-option" onclick="seleccionarCertificado(${i})" id="cert-${i}">
+              <img src="cert-${i}.png" alt="Certificado ${i}" 
+                   onerror="this.src='https://via.placeholder.com/400x283/0b1526/00d4ff?text=Certificado+${i}'">
+              <div class="certificate-label">Estilo ${i}</div>
+              <div class="certificate-check"><i class="fas fa-check"></i></div>
+            </div>
+          `).join('')}
+        </div>
+        
+        <div class="flex justify-between mt-6">
+          <button class="nasa-btn" onclick="closeModal()">
+            <i class="fas fa-arrow-left mr-2"></i>Volver
+          </button>
+          <button class="nasa-btn" onclick="continuarAlPago()">
+            Continuar al Pago<i class="fas fa-arrow-right ml-2"></i>
+          </button>
+        </div>
+      `;
+      
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function seleccionarCertificado(num) {
+      document.querySelectorAll('.certificate-option').forEach(el => el.classList.remove('selected'));
+      document.getElementById(`cert-${num}`).classList.add('selected');
+      selectedCertificate = num;
+      console.log('Certificado seleccionado:', num);
+    }
+
+    function continuarAlPago() {
+      if (!selectedCertificate) {
+        alert(translations[currentLanguage].error_certificado);
+        return;
+      }
+      mostrarPanelPago();
+    }
+
+    function mostrarPanelPago() {
+      const t = translations[currentLanguage];
+      const modalBody = document.getElementById('modal-body');
+      
+      modalBody.innerHTML = `
+        <h2 class="modal-title"><i class="fas fa-credit-card mr-2"></i>${t.pago_titulo}</h2>
+        
+        <div class="process-steps">
+          <div class="step completed"><span class="step-number">✓</span> Datos</div>
+          <div class="step completed"><span class="step-number">✓</span> Certificado</div>
+          <div class="step active"><span class="step-number">3</span> Pago</div>
+          <div class="step"><span class="step-number">4</span> Descarga</div>
+        </div>
+        
+        <div class="nasa-card p-4 mb-6">
+          <h3 class="text-lg font-semibold mb-3 text-blue-300">Resumen de tu pedido:</h3>
+          <div class="resumen-item">
+            <span>Estrella:</span>
+            <span class="text-yellow-300">"${formData.nuevoNombre}"</span>
+          </div>
+          <div class="resumen-item">
+            <span>Objeto original:</span>
+            <span>${formData.objeto}</span>
+          </div>
+          <div class="resumen-item">
+            <span>Coordenadas:</span>
+            <span>RA: ${formData.ra} | Dec: ${formData.dec}</span>
+          </div>
+          <div class="resumen-item">
+            <span>Certificado:</span>
+            <span>Estilo ${selectedCertificate}</span>
+          </div>
+          <div class="resumen-total">
+            <span>Total:</span>
+            <span>$12.00 USD</span>
+          </div>
+        </div>
+        
+        <div id="paypal-button-container-modal"></div>
+        
+        <div class="text-center mt-4">
+          <button class="text-gray-400 hover:text-white" onclick="mostrarSeleccionCertificados()">
+            <i class="fas fa-arrow-left mr-2"></i>Volver a elegir certificado
+          </button>
+        </div>
+      `;
+      
+      // Inicializar PayPal en el modal
+      setTimeout(() => {
+        paypal.Buttons({
+          style: { shape: 'rect', color: 'blue', layout: 'vertical', label: 'pay' },
+          createOrder: function(data, actions) {
+            return actions.order.create({
+              purchase_units: [{
+                description: "Certificado Estelar - " + formData.nuevoNombre,
+                amount: { currency_code: "USD", value: 12 }
+              }]
+            });
+          },
+          onApprove: function(data, actions) {
+            return actions.order.capture().then(function(orderData) {
+              procesarCompraExitosa();
+            });
+          },
+          onError: function(err) {
+            console.error("Error en pago:", err);
+            alert("Hubo un error con el pago. Intenta de nuevo.");
+          }
+        }).render('#paypal-button-container-modal');
+      }, 100);
+    }
+
+    function procesarCompraExitosa() {
+      const t = translations[currentLanguage];
+      const fechaActual = new Date().toISOString().split('T')[0];
+      const serieID = `COSMOS-${Date.now().toString(36).toUpperCase()}`;
+      
+      // Guardar cliente
+      clientes.push({
+        nombre: formData.nombre,
+        nuevoNombre: formData.nuevoNombre,
+        objeto: formData.objeto,
+        ra: formData.ra,
+        dec: formData.dec,
+        magnitud: formData.magnitud,
+        fecha: fechaActual,
+        id: serieID,
+        certificado: selectedCertificate
+      });
+      localStorage.setItem("clientes", JSON.stringify(clientes));
+      actualizarListaClientes();
+      
+      // Guardar datos para descarga
+      formData.fecha = fechaActual;
+      formData.serieID = serieID;
+      
+      mostrarPanelDescarga();
+    }
+
+    function mostrarPanelDescarga() {
+      const t = translations[currentLanguage];
+      const modalBody = document.getElementById('modal-body');
+      
+      modalBody.innerHTML = `
+        <div class="process-steps">
+          <div class="step completed"><span class="step-number">✓</span> Datos</div>
+          <div class="step completed"><span class="step-number">✓</span> Certificado</div>
+          <div class="step completed"><span class="step-number">✓</span> Pago</div>
+          <div class="step active"><span class="step-number">4</span> Descarga</div>
+        </div>
+        
+        <div class="download-panel">
+          <div class="download-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-green-400 mb-4">${t.descarga_titulo}</h2>
+          <p class="text-gray-300 mb-6">
+            ¡Pago confirmado! Tu certificado personalizado está listo.<br>
+            <span class="text-yellow-300">ID: ${formData.serieID}</span>
+          </p>
+          <button class="download-btn" onclick="generarYDescargarCertificado()">
+            <i class="fas fa-download"></i>
+            ${t.descarga_btn}
+          </button>
+          <p class="mt-6 text-gray-400">¡Gracias por tu compra!</p>
+        </div>
+      `;
+    }
+
+    // ==================== GENERAR CERTIFICADO PDF ====================
+    async function generarYDescargarCertificado() {
+      try {
+        const { PDFDocument, rgb, StandardFonts } = PDFLib;
+        
+        // Cargar el PDF de plantilla
+        const pdfUrl = `certificados/CERTIFICADO-${selectedCertificate}.pdf`;
+        let pdfDoc;
+        
+        try {
+          const existingPdfBytes = await fetch(pdfUrl).then(res => {
+            if (!res.ok) throw new Error('PDF no encontrado');
+            return res.arrayBuffer();
+          });
+          pdfDoc = await PDFDocument.load(existingPdfBytes);
+        } catch (e) {
+          // Si no se puede cargar el PDF, crear uno nuevo
+          console.log('Creando PDF desde cero...');
+          pdfDoc = await PDFDocument.create();
+          const page = pdfDoc.addPage([842, 595]); // A4 horizontal
+          
+          // Fondo
+          page.drawRectangle({
+            x: 0, y: 0,
+            width: 842, height: 595,
+            color: rgb(0.04, 0.08, 0.15)
+          });
+          
+          // Borde
+          page.drawRectangle({
+            x: 20, y: 20,
+            width: 802, height: 555,
+            borderColor: rgb(0, 0.83, 1),
+            borderWidth: 2
+          });
+        }
+        
+        const pages = pdfDoc.getPages();
+        const page = pages[0];
+        const { width, height } = page.getSize();
+        
+        const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+        const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+        
+        // Coordenadas basadas en la imagen del certificado que proporcionaste
+        // Ajustadas para un PDF de aproximadamente 842x595 (A4 horizontal)
+        
+        const goldColor = rgb(0.85, 0.65, 0.13);
+        const whiteColor = rgb(1, 1, 1);
+        const cyanColor = rgb(0, 0.83, 1);
+        
+        // Nombre de la estrella (después de "Este certificado comprueba que la estrella")
+        // Posición aproximada: centrado, línea debajo del texto introductorio
+        page.drawText(formData.nuevoNombre, {
+          x: 480,
+          y: height - 195,
+          size: 16,
+          font: fontBold,
+          color: goldColor,
+        });
+        
+        // Coordenadas (después de "con las siguientes coordenadas")
+        const coordenadas = `RA: ${formData.ra}  |  Dec: ${formData.dec}`;
+        page.drawText(coordenadas, {
+          x: 480,
+          y: height - 260,
+          size: 12,
+          font: font,
+          color: whiteColor,
+        });
+        
+        // Magnitud (después de "y magnitud aparente")
+        page.drawText(formData.magnitud || 'N/A', {
+          x: 480,
+          y: height - 330,
+          size: 12,
+          font: font,
+          color: whiteColor,
+        });
+        
+        // Nuevo nombre / renombrada como (después de "ha sido renombrada como")
+        page.drawText(`"${formData.nuevoNombre}"`, {
+          x: 520,
+          y: height - 400,
+          size: 18,
+          font: fontBold,
+          color: goldColor,
+        });
+        
+        // Fecha (parte inferior izquierda)
+        page.drawText(formData.fecha, {
+          x: 500,
+          y: height - 520,
+          size: 11,
+          font: font,
+          color: whiteColor,
+        });
+        
+        // Clave de registro (parte inferior derecha)
+        page.drawText(formData.serieID, {
+          x: 700,
+          y: height - 520,
+          size: 11,
+          font: font,
+          color: cyanColor,
+        });
+        
+        // Descargar
+        const pdfBytes = await pdfDoc.save();
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Certificado_${formData.nuevoNombre.replace(/\s+/g, '_')}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        // Limpiar formulario
+        document.getElementById('registroForm').reset();
+        selectedCertificate = null;
+        formData = {};
+        
+      } catch (error) {
+        console.error('Error generando PDF:', error);
+        alert('Error al generar el certificado. Intentando método alternativo...');
+        generarCertificadoAlternativo();
+      }
+    }
+
+    function generarCertificadoAlternativo() {
+      // Método alternativo: abrir ventana con datos
+      const contenido = `
+        CERTIFICADO DE ADQUISICIÓN ESTELAR
+        =====================================
+        
+        Este certificado comprueba que la estrella:
+        ${formData.objeto}
+        
+        Con coordenadas:
+        RA: ${formData.ra}
+        Dec: ${formData.dec}
+        
+        Magnitud aparente: ${formData.magnitud}
+        
+        Ha sido renombrada como:
+        "${formData.nuevoNombre}"
+        
+        Fecha: ${formData.fecha}
+        Clave de registro: ${formData.serieID}
+        
+        TuPedazoDeCosmos.com
+      `;
+      
+      const win = window.open('', '_blank');
+      win.document.write(`<pre style="font-family: monospace; padding: 40px;">${contenido}</pre>`);
+      win.print();
+    }
+
+    // ==================== FUNCIONES AUXILIARES ====================
+    function rastrearPedido() {
+      const input = document.getElementById('trackingInput');
+      const result = document.getElementById('trackingResult');
+      const searchId = input.value.trim().toUpperCase();
+      
+      if (!searchId) {
+        result.innerHTML = '<p class="text-yellow-400">Ingresa un número de serie.</p>';
+        result.classList.remove('hidden');
+        result.style.background = 'rgba(234, 179, 8, 0.2)';
+        return;
+      }
+      
+      const cliente = clientes.find(c => c.id.toUpperCase() === searchId);
+      
+      if (cliente) {
+        result.innerHTML = `
+          <div class="text-green-400 mb-2"><i class="fas fa-check-circle mr-2"></i>¡Encontrado!</div>
+          <p><strong>Cliente:</strong> ${cliente.nombre}</p>
+          <p><strong>Estrella:</strong> ${cliente.nuevoNombre}</p>
+          <p><strong>Fecha:</strong> ${cliente.fecha}</p>
+        `;
+        result.style.background = 'rgba(34, 197, 94, 0.2)';
+      } else {
+        result.innerHTML = '<p class="text-red-400">No se encontró ese registro.</p>';
+        result.style.background = 'rgba(239, 68, 68, 0.2)';
+      }
+      result.classList.remove('hidden');
+    }
+
+    function cargarListaPedidos() {
+      const container = document.getElementById('pedidosList');
+      if (!container) return;
+      
+      if (clientes.length === 0) {
+        container.innerHTML = '<p class="text-gray-400">No hay pedidos registrados.</p>';
+        return;
+      }
+      
+      container.innerHTML = clientes.map(c => `
+        <div class="nasa-card p-3 rounded-lg">
+          <p class="text-blue-300 font-semibold">${c.nuevoNombre}</p>
+          <p class="text-sm text-gray-400">Por: ${c.nombre} | ${c.fecha}</p>
+          <p class="text-xs text-gray-500">ID: ${c.id}</p>
+        </div>
+      `).join('');
+    }
+
+    function actualizarListaClientes() {
+      const lista = document.getElementById("listaClientes");
+      lista.innerHTML = "";
+      
+      if (clientes.length === 0) {
+        lista.innerHTML = '<li class="text-gray-500 italic">Aún no hay registros. ¡Sé el primero!</li>';
+        return;
+      }
+      
+      clientes.forEach(c => {
+        const item = document.createElement("li");
+        item.innerHTML = `<span class="text-blue-300">${c.nombre}</span> registró '<span class="text-yellow-300">${c.nuevoNombre}</span>' el ${c.fecha}`;
+        lista.appendChild(item);
+      });
+    }
+
+    // ==================== INICIALIZACIÓN ====================
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Página cargada');
+      applyTranslations();
+      actualizarListaClientes();
+    });
+  </script>
+</body>
+</html>

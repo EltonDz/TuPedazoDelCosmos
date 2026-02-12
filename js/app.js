@@ -512,61 +512,62 @@ async function generarYDescargarCertificado() {
     const goldColor = rgb(0.85, 0.65, 0.13);
     const whiteColor = rgb(1, 1, 1);
     const cyanColor = rgb(0, 0.83, 1);
+    const blackColor = rgb(0.1, 0.2, 0.3);
     
     // Nombre de la estrella (después de "Este certificado comprueba que la estrella")
     // Posición aproximada: centrado, línea debajo del texto introductorio
     page.drawText(formData.nuevoNombre, {
-      x: 480,
-      y: height - 195,
+      x: 390,
+      y: height - 356,
       size: 16,
       font: fontBold,
-      color: goldColor,
+      color: blackColor,
     });
     
     // Coordenadas (después de "con las siguientes coordenadas")
     const coordenadas = `RA: ${formData.ra}  |  Dec: ${formData.dec}`;
     page.drawText(coordenadas, {
-      x: 480,
-      y: height - 260,
+      x: 340,
+      y: height - 298,
       size: 12,
       font: font,
-      color: whiteColor,
+      color: blackColor,
     });
     
     // Magnitud (después de "y magnitud aparente")
     page.drawText(formData.magnitud || 'N/A', {
-      x: 480,
-      y: height - 330,
+      x: 340,
+      y: height - 247,
       size: 12,
       font: font,
-      color: whiteColor,
+      color: blackColor,
     });
     
     // Nuevo nombre / renombrada como (después de "ha sido renombrada como")
     page.drawText(`"${formData.nuevoNombre}"`, {
-      x: 520,
-      y: height - 400,
+      x: 470,
+      y: height - 783,
       size: 18,
       font: fontBold,
-      color: goldColor,
+      color: blackColor,
     });
     
     // Fecha (parte inferior izquierda)
     page.drawText(formData.fecha, {
-      x: 500,
-      y: height - 520,
+      x: 343,
+      y: height - 93,
       size: 11,
       font: font,
-      color: whiteColor,
+      color: blackColor,
     });
     
     // Clave de registro (parte inferior derecha)
     page.drawText(formData.serieID, {
-      x: 700,
-      y: height - 520,
+      x: 640,
+      y: height - 93,
       size: 11,
       font: font,
-      color: cyanColor,
+      color: blackColor,
     });
     
     // Descargar

@@ -275,7 +275,7 @@ function mostrarSeleccionCertificados() {
     <div class="certificate-grid">
       ${[1,2,3,4].map(i => `
         <div class="certificate-option" onclick="seleccionarCertificado(${i})" id="cert-${i}">
-          <img src="cert-${i}.png" alt="Certificado ${i}">
+          <img src="assets/imgs/cert-${i}.png" alt="Certificado ${i}">
           <div class="certificate-label">Estilo ${i}</div>
           <div class="certificate-check"><i class="fas fa-check"></i></div>
         </div>

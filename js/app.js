@@ -314,7 +314,7 @@ function continuarAlPago() {
 function mostrarPanelPago() {
   const t = translations[currentLanguage];
   const modalBody = document.getElementById('modal-body');
-  /*
+  
   modalBody.innerHTML = `
     <h2 class="modal-title"><i class="fas fa-credit-card mr-2"></i>${t.pago_titulo}</h2>
     
@@ -380,7 +380,7 @@ function mostrarPanelPago() {
         alert("Hubo un error con el pago. Intenta de nuevo.");
       }
     }).render('#paypal-button-container-modal');
-  }, 100);*/
+  }, 100);
   procesarCompraExitosa();
 }
 

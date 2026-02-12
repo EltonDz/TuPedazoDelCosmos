@@ -381,7 +381,6 @@ function mostrarPanelPago() {
       }
     }).render('#paypal-button-container-modal');
   }, 100);
-  procesarCompraExitosa();
 }
 
 function procesarCompraExitosa() {

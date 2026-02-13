@@ -546,8 +546,8 @@ async function generarYDescargarCertificado() {
     
     // Magnitud (después de "y magnitud aparente")
     page.drawText(formData.magnitud || 'N/A', {
-      x: 363,
-      y: height - 348,
+      x: 368,
+      y: height - 340,
       size: 12,
       font: font,
       color: blackColor,
@@ -564,8 +564,8 @@ async function generarYDescargarCertificado() {
     
     // Fecha (parte inferior izquierda)
     page.drawText(formData.fecha, {
-      x: 348,
-      y: height - 502,
+      x: 350,
+      y: height - 498,
       size: 11,
       font: font,
       color: blackColor,
@@ -573,8 +573,8 @@ async function generarYDescargarCertificado() {
     
     // Clave de registro (parte inferior derecha)
     page.drawText(formData.serieID, {
-      x: 636,
-      y: height - 502,
+      x: 634,
+      y: height - 498,
       size: 11,
       font: font,
       color: blackColor,

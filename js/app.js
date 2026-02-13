@@ -526,7 +526,7 @@ async function generarYDescargarCertificado() {
     
     // Nombre de la estrella (después de "Este certificado comprueba que la estrella")
     // Posición aproximada: centrado, línea debajo del texto introductorio
-    page.drawText(formData.Objeto, {
+    page.drawText(formData.objeto, {
       x: 428,
       y: height - 235,
       size: 16,

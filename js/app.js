@@ -310,7 +310,7 @@ function seleccionarCertificado(num) {
   selectedCertificate = num;
   console.log('Certificado seleccionado:', num);
 }
-/*
+
 function continuarAlPago() {
   if (!selectedCertificate) {
     alert(translations[currentLanguage].error_certificado);
@@ -322,7 +322,7 @@ function continuarAlPago() {
 function mostrarPanelPago() {
   const t = translations[currentLanguage];
   const modalBody = document.getElementById('modal-body');
-  
+  /*
   modalBody.innerHTML = `
     <h2 class="modal-title"><i class="fas fa-credit-card mr-2"></i>${t.pago_titulo}</h2>
     

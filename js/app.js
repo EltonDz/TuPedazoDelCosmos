@@ -310,7 +310,7 @@ function seleccionarCertificado(num) {
   selectedCertificate = num;
   console.log('Certificado seleccionado:', num);
 }
-
+/*
 function continuarAlPago() {
   if (!selectedCertificate) {
     alert(translations[currentLanguage].error_certificado);
@@ -389,6 +389,8 @@ function mostrarPanelPago() {
       }
     }).render('#paypal-button-container-modal');
   }, 100);
+  */
+ procesarCompraExitosa();
 }
 
 function procesarCompraExitosa() {

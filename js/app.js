@@ -560,7 +560,7 @@ async function generarYDescargarCertificado() {
     // Nombre de la estrella (después de "Este certificado comprueba que la estrella")
     // Posición aproximada: centrado, línea debajo del texto introductorio
     page.drawText(formData.objeto, {
-      x: 350,
+      x: 428,
       y: height - 235,
       size: 16,
       font: fontBold,
@@ -570,8 +570,8 @@ async function generarYDescargarCertificado() {
     // Coordenadas (después de "con las siguientes coordenadas")
     const coordenadas = `RA: ${formData.ra}  |  Dec: ${formData.dec}`;
     page.drawText(coordenadas, {
-      x: 378,
-      y: height - 290,
+      x: 393,
+      y: height - 289,
       size: 12,
       font: font,
       color: blackColor,
@@ -579,17 +579,17 @@ async function generarYDescargarCertificado() {
     
     // Magnitud (después de "y magnitud aparente")
     page.drawText(formData.magnitud || 'N/A', {
-      x: 355,
-      y: height - 346,
+      x: 372,
+      y: height - 338,
       size: 12,
       font: font,
       color: blackColor,
     });
     
     // Nuevo nombre / renombrada como (después de "ha sido renombrada como")
-    page.drawText(`"${formData.nuevoNombre}"`, {
-      x: 500,
-      y: height - 407,
+    page.drawText(`${formData.nuevoNombre}`, {
+      x: 516,
+      y: height - 406,
       size: 18,
       font: fontBold,
       color: blackColor,
@@ -597,8 +597,8 @@ async function generarYDescargarCertificado() {
     
     // Fecha (parte inferior izquierda)
     page.drawText(formData.fecha, {
-      x: 350,
-      y: height - 500,
+      x: 355,
+      y: height - 496,
       size: 11,
       font: font,
       color: blackColor,
@@ -606,8 +606,8 @@ async function generarYDescargarCertificado() {
     
     // Clave de registro (parte inferior derecha)
     page.drawText(formData.serieID, {
-      x: 635,
-      y: height - 500,
+      x: 628,
+      y: height - 496,
       size: 11,
       font: font,
       color: blackColor,

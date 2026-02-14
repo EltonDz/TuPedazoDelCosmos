@@ -1,9 +1,46 @@
-
 // ==================== VARIABLES GLOBALES ====================
 let selectedCertificate = null;
 let formData = {};
 let clientes = JSON.parse(localStorage.getItem("clientes")) || [];
 let currentLanguage = localStorage.getItem('language') || 'es';
+
+// ==================== CARGAR LISTA DE CERTIFICADOS RECIENTES ====================
+document.addEventListener("DOMContentLoaded", function () {
+  mostrarPrimerosReg();
+});
+
+function mostrarPrimerosReg() {
+  fetch("https://script.google.com/macros/s/AKfycbxIrdP_fXuSI2iJlBLTRlYPB1sBnhbf7zwv45lQVmaMGaWsbwVgyB828rrcv4nVT_x5QQ/exec?action=getFirst10")
+    .then(response => response.json())
+    .then(datos => {
+      actualizarListaClientes(datos);
+    })
+    .catch(error => console.error(error));
+}
+
+function actualizarListaClientes(datos) {
+  const lista = document.getElementById("listaClientes");
+  lista.innerHTML = "";
+  
+  if (datos.length === 0) {
+    lista.innerHTML = '<li class="text-gray-500 italic">Aún no hay registros. ¡Sé el primero!</li>';
+    return;
+  }
+  
+  datos.forEach(c => {
+    let fecha = new Date(c[7]);
+
+    fecha = fecha.toLocaleDateString("es-ES", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
+
+    const item = document.createElement("li");
+    item.innerHTML = `<span class="text-blue-300">${c[1]}</span> registró '<span class="text-yellow-300">${c[3]}</span>' el ${fecha}`;
+    lista.appendChild(item);
+  });
+}
 
 // ==================== TRADUCCIONES ====================
 const translations = {
@@ -241,15 +278,24 @@ function validarYMostrarCertificados() {
   const form = document.getElementById('registroForm');
   const nombre = form.nombre.value.trim();
   const objeto = form.objeto.value.trim();
-  const ra = form.ra.value.trim();
-  const dec = form.dec.value.trim();
+  const ra1 = form.ra1.value.trim();
+  const ra2 = form.ra2.value.trim();
+  const ra3 = form.ra3.value.trim();
+  // const ra = form.ra.value.trim();
+  const dec1 = form.dec1.value.trim();
+  const dec2 = form.dec2.value.trim();
+  const dec3 = form.dec3.value.trim();
+  // const dec = form.dec.value.trim();
   const nuevoNombre = form.nuevoNombre.value.trim();
   const magnitud = form.magnitud.value.trim() || 'N/A';
   
-  if (!nombre || !objeto || !ra || !dec || !nuevoNombre) {
+  if (!nombre || !objeto || !ra1 || !ra2 || !ra3 || !dec1 || !dec2 || !dec3 || !nuevoNombre) {
     alert(translations[currentLanguage].error_campos);
     return;
   }
+
+  const ra = `${ra1}h ${ra2}m ${ra3}s`
+  const dec = `${dec1}º ${dec2}' ${dec3}"`
   
   formData = { nombre, objeto, ra, dec, nuevoNombre, magnitud };
   mostrarSeleccionCertificados();
@@ -385,8 +431,15 @@ function mostrarPanelPago() {
 
 function procesarCompraExitosa() {
   const t = translations[currentLanguage];
-  const fechaActual = new Date().toISOString().split('T')[0];
+  const fechaActual = new Date().toISOString();
+  let fechaCert = new Date();
   const serieID = `COSMOS-${Date.now().toString(36).toUpperCase()}`;
+  
+  fechaCert = fechaCert.toLocaleDateString("es-ES", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+  });
   
   // Guardar cliente
   clientes.push({
@@ -401,10 +454,10 @@ function procesarCompraExitosa() {
     certificado: selectedCertificate
   });
   localStorage.setItem("clientes", JSON.stringify(clientes));
-  actualizarListaClientes();
+  // actualizarListaClientes();
   
   // Guardar datos para descarga
-  formData.fecha = fechaActual;
+  formData.fecha = fechaCert;
   formData.serieID = serieID;
 
   const data = new URLSearchParams({
@@ -478,25 +531,7 @@ async function generarYDescargarCertificado() {
       });
       pdfDoc = await PDFDocument.load(existingPdfBytes);
     } catch (e) {
-      // Si no se puede cargar el PDF, crear uno nuevo
-      console.log('Creando PDF desde cero...');
-      pdfDoc = await PDFDocument.create();
-      const page = pdfDoc.addPage([842, 595]); // A4 horizontal
-      
-      // Fondo
-      page.drawRectangle({
-        x: 0, y: 0,
-        width: 842, height: 595,
-        color: rgb(0.04, 0.08, 0.15)
-      });
-      
-      // Borde
-      page.drawRectangle({
-        x: 20, y: 20,
-        width: 802, height: 555,
-        borderColor: rgb(0, 0.83, 1),
-        borderWidth: 2
-      });
+      console.log('No se puede crear certificado.');
     }
     
     const pages = pdfDoc.getPages();
@@ -516,9 +551,9 @@ async function generarYDescargarCertificado() {
     
     // Nombre de la estrella (después de "Este certificado comprueba que la estrella")
     // Posición aproximada: centrado, línea debajo del texto introductorio
-    page.drawText(formData.nuevoNombre, {
-      x: 390,
-      y: height - 356,
+    page.drawText(formData.objeto, {
+      x: 350,
+      y: height - 235,
       size: 16,
       font: fontBold,
       color: blackColor,
@@ -527,8 +562,8 @@ async function generarYDescargarCertificado() {
     // Coordenadas (después de "con las siguientes coordenadas")
     const coordenadas = `RA: ${formData.ra}  |  Dec: ${formData.dec}`;
     page.drawText(coordenadas, {
-      x: 340,
-      y: height - 298,
+      x: 378,
+      y: height - 290,
       size: 12,
       font: font,
       color: blackColor,
@@ -536,8 +571,8 @@ async function generarYDescargarCertificado() {
     
     // Magnitud (después de "y magnitud aparente")
     page.drawText(formData.magnitud || 'N/A', {
-      x: 340,
-      y: height - 247,
+      x: 355,
+      y: height - 346,
       size: 12,
       font: font,
       color: blackColor,
@@ -545,8 +580,8 @@ async function generarYDescargarCertificado() {
     
     // Nuevo nombre / renombrada como (después de "ha sido renombrada como")
     page.drawText(`"${formData.nuevoNombre}"`, {
-      x: 470,
-      y: height - 783,
+      x: 500,
+      y: height - 407,
       size: 18,
       font: fontBold,
       color: blackColor,
@@ -554,8 +589,8 @@ async function generarYDescargarCertificado() {
     
     // Fecha (parte inferior izquierda)
     page.drawText(formData.fecha, {
-      x: 343,
-      y: height - 93,
+      x: 350,
+      y: height - 500,
       size: 11,
       font: font,
       color: blackColor,
@@ -563,8 +598,8 @@ async function generarYDescargarCertificado() {
     
     // Clave de registro (parte inferior derecha)
     page.drawText(formData.serieID, {
-      x: 640,
-      y: height - 93,
+      x: 635,
+      y: height - 500,
       size: 11,
       font: font,
       color: blackColor,
@@ -630,36 +665,12 @@ function rastrearPedido() {
   //const result = document.getElementById('trackingResult');
   const searchId = input.value.trim().toUpperCase();
   
-  /*if (!searchId) {
-    result.innerHTML = '<p class="text-yellow-400">Ingresa un número de serie.</p>';
-    result.classList.remove('hidden');
-    result.style.background = 'rgba(234, 179, 8, 0.2)';
-    return;
-  }*/
-  
   fetch(`${"https://script.google.com/macros/s/AKfycbxIrdP_fXuSI2iJlBLTRlYPB1sBnhbf7zwv45lQVmaMGaWsbwVgyB828rrcv4nVT_x5QQ/exec"}?id=${searchId}`)
     .then(res => res.json())
     .then(data => {
       regenCertificado(data, searchId);
     })
     .catch(console.error);
-  
-  
-  /*if (data.length) {
-    const cliente = data[0];
-    result.innerHTML = `
-      <div class="text-green-400 mb-2"><i class="fas fa-check-circle mr-2"></i>¡Encontrado!</div>
-      <p><strong>Cliente:</strong> ${cliente.nombre}</p>
-      <p><strong>Cliente:</strong> ${cliente.objeto}</p>
-      <p><strong>Estrella:</strong> ${cliente.nuevo_nombre}</p>
-      <p><strong>Fecha:</strong> ${cliente.fecha}</p>
-    `;
-    result.style.background = 'rgba(34, 197, 94, 0.2)';
-  } else {
-    result.innerHTML = '<p class="text-red-400">No se encontró ese registro.</p>';
-    result.style.background = 'rgba(239, 68, 68, 0.2)';
-  }
-  result.classList.remove('hidden');*/
 }
 
 let cliente_actual = null;
@@ -698,52 +709,110 @@ function regenCertificado(data, sid) {
 }
 
 async function regenerarPDF() {
-  const { PDFDocument, StandardFonts, rgb } = PDFLib;
+  try {
+    const { PDFDocument, rgb, StandardFonts } = PDFLib;
+    
+    // Cargar el PDF de plantilla
+    const pdfUrl = `assets/certificados/CERTIFICADO-${cliente_actual.tipo}.pdf`;
+    let pdfDoc;
+    
+    try {
+      const existingPdfBytes = await fetch(pdfUrl).then(res => {
+        if (!res.ok) throw new Error('PDF no encontrado');
+        return res.arrayBuffer();
+      });
+      pdfDoc = await PDFDocument.load(existingPdfBytes);
+    } catch (e) {
+      console.log('No se puede crear certificado.');
+    }
+    
+    const pages = pdfDoc.getPages();
+    const page = pages[0];
+    const { width, height } = page.getSize();
+    
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+    
+    // Coordenadas basadas en la imagen del certificado que proporcionaste
+    // Ajustadas para un PDF de aproximadamente 842x595 (A4 horizontal)
+    
+    const blackColor = rgb(0.1, 0.2, 0.3);
+    
+    // Nombre de la estrella (después de "Este certificado comprueba que la estrella")
+    // Posición aproximada: centrado, línea debajo del texto introductorio
+    page.drawText(cliente_actual.objeto, {
+      x: 350,
+      y: height - 235,
+      size: 16,
+      font: fontBold,
+      color: blackColor,
+    });
+    
+    // Coordenadas (después de "con las siguientes coordenadas")
+    const coordenadas = `RA: ${cliente_actual.ra}  |  Dec: ${cliente_actual.dec}`;
+    page.drawText(coordenadas, {
+      x: 378,
+      y: height - 290,
+      size: 12,
+      font: font,
+      color: blackColor,
+    });
+    
+    // Magnitud (después de "y magnitud aparente")
+    page.drawText(`${cliente_actual.mag}` || 'N/A', {
+      x: 355,
+      y: height - 346,
+      size: 12,
+      font: font,
+      color: blackColor,
+    });
+    
+    // Nuevo nombre / renombrada como (después de "ha sido renombrada como")
+    page.drawText(`"${cliente_actual.nuevo_nombre}"`, {
+      x: 500,
+      y: height - 407,
+      size: 18,
+      font: fontBold,
+      color: blackColor,
+    });
+    
+    // Fecha (parte inferior izquierda)
+    let fecha = new Date(cliente_actual.fecha);
 
-  const pdfDoc = await PDFDocument.create();
-  const page = pdfDoc.addPage();
+    fecha = fecha.toLocaleDateString("es-ES", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
 
-  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    page.drawText(fecha, {
+      x: 350,
+      y: height - 500,
+      size: 11,
+      font: font,
+      color: blackColor,
+    });
+    
+    // Clave de registro (parte inferior derecha)
+    page.drawText(cliente_actual.id, {
+      x: 635,
+      y: height - 500,
+      size: 11,
+      font: font,
+      color: blackColor,
+    });
+    
+    // Descargar
+    const pdfBytes = await pdfDoc.save();
+    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
 
-  page.drawText("User Information", {
-    x: 50,
-    y: 750,
-    size: 18,
-    font,
-  });
-
-  page.drawText(`ID: ${cliente_actual.id}`, {
-    x: 50,
-    y: 720,
-    size: 12,
-    font,
-  });
-
-  page.drawText(`Objeto: ${cliente_actual.objeto}`, {
-    x: 50,
-    y: 700,
-    size: 12,
-    font,
-  });
-
-  page.drawText(`Nuevo Nombre: ${cliente_actual.nuevo_nombre}`, {
-    x: 50,
-    y: 680,
-    size: 12,
-    font,
-  });
-
-  // Generate PDF bytes
-  const pdfBytes = await pdfDoc.save();
-
-  // Convert to Blob
-  const blob = new Blob([pdfBytes], { type: "application/pdf" });
-
-  // Create object URL
-  const url = URL.createObjectURL(blob);
-
-  // Open in new tab
-  window.open(url, "_blank");
+    window.open(url, "_blank");
+  } catch (error) {
+    console.error('Error generando PDF:', error);
+    alert('Error al generar el certificado. Intentando método alternativo...');
+    generarCertificadoAlternativo();
+  }
 }
 
 function cargarListaPedidos() {
@@ -762,22 +831,6 @@ function cargarListaPedidos() {
       <p class="text-xs text-gray-500">ID: ${c.id}</p>
     </div>
   `).join('');
-}
-
-function actualizarListaClientes() {
-  const lista = document.getElementById("listaClientes");
-  lista.innerHTML = "";
-  
-  if (clientes.length === 0) {
-    lista.innerHTML = '<li class="text-gray-500 italic">Aún no hay registros. ¡Sé el primero!</li>';
-    return;
-  }
-  
-  clientes.forEach(c => {
-    const item = document.createElement("li");
-    item.innerHTML = `<span class="text-blue-300">${c.nombre}</span> registró '<span class="text-yellow-300">${c.nuevoNombre}</span>' el ${c.fecha}`;
-    lista.appendChild(item);
-  });
 }
 
 // ==================== INICIALIZACIÓN ====================

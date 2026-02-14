@@ -288,6 +288,17 @@ body::before {
   transition: all 0.3s ease;
 }
 
+.nasa-input-ra-dec {
+  background: rgba(11, 61, 145, 0.3);
+  border: 1px solid rgba(79, 195, 247, 0.5);
+  border-radius: 8px;
+  padding: 10px 6px;
+  color: white;
+  /* width: 10%; */
+  /* box-sizing: border-box; */
+  transition: all 0.3s ease;
+}
+
 .nasa-input:focus {
   outline: none;
   border-color: var(--nasa-cyan);
@@ -297,6 +308,55 @@ body::before {
 
 .nasa-input::placeholder {
   color: rgba(255, 255, 255, 0.5);
+}
+
+.input-row {
+  display: flex;
+  align-items: center;
+}
+
+.input-row label {
+  margin: 0;
+  padding: 0;
+}
+
+.input-row input {
+  margin-left: 8px;   /* small space after each label */
+  margin-right: 1px;    /* no extra space after input */
+  width: 90px;
+  padding: 4px;
+}
+
+/* Remove default spacing between input and next label */
+.input-row input + label {
+  margin-left: 0;
+}
+
+.degree-ra {
+  position: relative;
+  top: 1px;   /* move up */
+  font-size: 1.2em; /* optional: slightly smaller */
+}
+
+.degree-lab {
+  position: relative;
+  top: 7px;   /* move up */
+  /* font-size: 1.2em; optional: slightly smaller */
+}
+
+.degree {
+  position: relative;
+  top: -9px;   /* move up */
+  font-size: 1.2em; /* optional: slightly smaller */
+}
+
+.coord-grid {
+  display: grid;
+  grid-template-columns: 60px 100px 60px 100px 60px 100px 60px;
+  align-items: center;
+  /* justify-items: center; */
+  /* place-items: center; */
+  gap: 6px 6px;  /* row gap / column gap */
 }
 
 .nasa-card {

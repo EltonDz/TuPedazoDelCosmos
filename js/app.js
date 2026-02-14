@@ -540,7 +540,7 @@ async function generarYDescargarCertificado() {
       x: 393,
       y: height - 289,
       size: 12,
-      font: font,
+      font: fontBold,
       color: blackColor,
     });
     
@@ -549,7 +549,7 @@ async function generarYDescargarCertificado() {
       x: 372,
       y: height - 342,
       size: 12,
-      font: font,
+      font: fontBold,
       color: blackColor,
     });
     
@@ -567,7 +567,7 @@ async function generarYDescargarCertificado() {
       x: 355,
       y: height - 496,
       size: 11,
-      font: font,
+      font: fontBold,
       color: blackColor,
     });
     
@@ -576,7 +576,7 @@ async function generarYDescargarCertificado() {
       x: 628,
       y: height - 496,
       size: 11,
-      font: font,
+      font: fontBold,
       color: blackColor,
     });
     

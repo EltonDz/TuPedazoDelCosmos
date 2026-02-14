@@ -217,19 +217,27 @@ function openModal(section) {
       `;
       break;
     case 'faq':
-      content = `
+       content = `
         <h2 class="modal-title"><i class="fas fa-question-circle mr-2"></i>${t.modal_faq_titulo}</h2>
         <div class="faq-item">
           <div class="faq-question"><span>¿Es oficial el registro?</span></div>
-          <div class="faq-answer">El registro es simbólico y conmemorativo.</div>
+          <div class="faq-answer">El registro es simbólico y conmemorativo. La Unión Astronómica Internacional (IAU) es el único organismo que asigna nombres oficiales a los cuerpos celestes. Nuestro servicio ofrece una forma única y personal de conectar con el cosmos.</div>
         </div>
         <div class="faq-item">
           <div class="faq-question"><span>¿Qué recibo al comprar?</span></div>
-          <div class="faq-answer">Un certificado PDF con nombre, coordenadas y número de serie único.</div>
+          <div class="faq-answer">Recibirás un certificado PDF descargable con el nombre de tu estrella, coordenadas celestes (RA y Dec), fecha de registro y un número de serie único.</div>
         </div>
         <div class="faq-item">
           <div class="faq-question"><span>¿Puedo regalar una estrella?</span></div>
-          <div class="faq-answer">¡Sí! Es un regalo perfecto para cualquier ocasión.</div>
+          <div class="faq-answer">¡Por supuesto! Es un regalo perfecto para cumpleaños, aniversarios, San Valentín o cualquier ocasión especial. Solo ingresa el nombre de la persona a quien deseas obsequiarle su pedazo de cosmos.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question"><span>¿Cómo encuentro las coordenadas?</span></div>
+          <div class="faq-answer"> Usa el visor Stellarium en nuestra página principal. Haz clic en cualquier estrella u objeto y verás su información en la esquina superior izquierda, incluyendo RA (Ascensión Recta) y Dec (Declinación).</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question"><span>¿Puedo ver mi estrella desde la Tierra?</span></div>
+          <div class="faq-answer">Depende del objeto que elijas. Muchas estrellas son visibles a simple vista o con telescopios pequeños. El visor Stellarium te mostrará la ubicación exacta en el cielo según tu ubicación geográfica.</div>
         </div>
       `;
       break;

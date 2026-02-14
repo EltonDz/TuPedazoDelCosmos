@@ -547,7 +547,7 @@ async function generarYDescargarCertificado() {
     // Magnitud (después de "y magnitud aparente")
     page.drawText(formData.magnitud || 'N/A', {
       x: 372,
-      y: height - 338,
+      y: height - 340,
       size: 12,
       font: font,
       color: blackColor,

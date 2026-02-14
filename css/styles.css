@@ -579,3 +579,50 @@ body::before {
   border-top: 2px solid var(--nasa-cyan);
   margin-top: 10px;
 }
+/* Asegura que nada se salga horizontalmente */
+#registroForm { 
+  overflow-x: hidden;
+}
+
+/* Clave: permite que los items del grid se encojan dentro del contenedor */
+#registroForm > * {
+  min-width: 0;
+}
+
+/* Inputs siempre dentro */
+.nasa-input,
+.nasa-input-ra-dec {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* FIX REAL: coord-grid responsive (no fijo a 100px) */
+.coord-grid {
+  display: grid;
+  width: 100%;
+  align-items: center;
+  gap: 8px 10px;
+
+  /* 60px para RA/DEC + 3 inputs flexibles + unidades pequeñas */
+  grid-template-columns:
+    60px minmax(0, 1fr) 18px
+    minmax(0, 1fr) 18px
+    minmax(0, 1fr) 18px;
+}
+
+/* Ajuste móvil: reduce un poco para que no reviente */
+@media (max-width: 480px) {
+  .coord-grid {
+    grid-template-columns:
+      48px minmax(0, 1fr) 14px
+      minmax(0, 1fr) 14px
+      minmax(0, 1fr) 14px;
+    gap: 6px 8px;
+  }
+
+  .nasa-input-ra-dec {
+    padding: 8px 6px;
+  }
+}

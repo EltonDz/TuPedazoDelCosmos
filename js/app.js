@@ -557,7 +557,7 @@ async function generarYDescargarCertificado() {
     const cyanColor = rgb(0, 0.83, 1);
     const blackColor = rgb(0.1, 0.2, 0.3);
     
-    // Nombre de la estrella (después de "Este certificado comprueba que la estrella")
+     // Nombre de la estrella (después de "Este certificado comprueba que la estrella")
     // Posición aproximada: centrado, línea debajo del texto introductorio
     page.drawText(formData.objeto, {
       x: 428,
@@ -573,16 +573,16 @@ async function generarYDescargarCertificado() {
       x: 393,
       y: height - 289,
       size: 12,
-      font: font,
+      font: fontBold,
       color: blackColor,
     });
     
     // Magnitud (después de "y magnitud aparente")
     page.drawText(formData.magnitud || 'N/A', {
       x: 372,
-      y: height - 338,
+      y: height - 342,
       size: 12,
-      font: font,
+      font: fontBold,
       color: blackColor,
     });
     
@@ -600,7 +600,7 @@ async function generarYDescargarCertificado() {
       x: 355,
       y: height - 496,
       size: 11,
-      font: font,
+      font: fontBold,
       color: blackColor,
     });
     
@@ -609,7 +609,7 @@ async function generarYDescargarCertificado() {
       x: 628,
       y: height - 496,
       size: 11,
-      font: font,
+      font: fontBold,
       color: blackColor,
     });
     

@@ -294,8 +294,8 @@ body::before {
   border-radius: 8px;
   padding: 10px 6px;
   color: white;
-  /* width: 10%; */
-  /* box-sizing: border-box; */
+  width: 10%;
+  box-sizing: border-box;
   transition: all 0.3s ease;
 }
 

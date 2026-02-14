@@ -557,7 +557,15 @@ async function generarYDescargarCertificado() {
     const cyanColor = rgb(0, 0.83, 1);
     const blackColor = rgb(0.1, 0.2, 0.3);
     
-     // Nombre de la estrella (después de "Este certificado comprueba que la estrella")
+     // Coordenadas basadas en la imagen del certificado que proporcionaste
+    // Ajustadas para un PDF de aproximadamente 842x595 (A4 horizontal)
+    
+    const goldColor = rgb(0.85, 0.65, 0.13);
+    const whiteColor = rgb(1, 1, 1);
+    const cyanColor = rgb(0, 0.83, 1);
+    const blackColor = rgb(0, 0, 0);
+    
+    // Nombre de la estrella (después de "Este certificado comprueba que la estrella")
     // Posición aproximada: centrado, línea debajo del texto introductorio
     page.drawText(formData.objeto, {
       x: 428,
@@ -570,7 +578,7 @@ async function generarYDescargarCertificado() {
     // Coordenadas (después de "con las siguientes coordenadas")
     const coordenadas = `RA: ${formData.ra}  |  Dec: ${formData.dec}`;
     page.drawText(coordenadas, {
-      x: 393,
+      x: 360,
       y: height - 289,
       size: 12,
       font: fontBold,
@@ -588,7 +596,7 @@ async function generarYDescargarCertificado() {
     
     // Nuevo nombre / renombrada como (después de "ha sido renombrada como")
     page.drawText(`${formData.nuevoNombre}`, {
-      x: 516,
+      x: 490,
       y: height - 406,
       size: 18,
       font: fontBold,
@@ -612,7 +620,6 @@ async function generarYDescargarCertificado() {
       font: fontBold,
       color: blackColor,
     });
-    
     // Descargar
     const pdfBytes = await pdfDoc.save();
     const blob = new Blob([pdfBytes], { type: 'application/pdf' });

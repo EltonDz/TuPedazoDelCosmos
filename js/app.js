@@ -570,25 +570,25 @@ async function generarYDescargarCertificado() {
     // Coordenadas (después de "con las siguientes coordenadas")
     const coordenadas = `RA: ${formData.ra}  |  Dec: ${formData.dec}`;
     page.drawText(coordenadas, {
-      x: 393,
+      x: 360,
       y: height - 289,
       size: 12,
-      font: font,
+      font: fontBold,
       color: blackColor,
     });
     
     // Magnitud (después de "y magnitud aparente")
     page.drawText(formData.magnitud || 'N/A', {
       x: 372,
-      y: height - 338,
+      y: height - 342,
       size: 12,
-      font: font,
+      font: fontBold,
       color: blackColor,
     });
     
     // Nuevo nombre / renombrada como (después de "ha sido renombrada como")
     page.drawText(`${formData.nuevoNombre}`, {
-      x: 516,
+      x: 490,
       y: height - 406,
       size: 18,
       font: fontBold,
@@ -600,7 +600,7 @@ async function generarYDescargarCertificado() {
       x: 355,
       y: height - 496,
       size: 11,
-      font: font,
+      font: fontBold,
       color: blackColor,
     });
     
@@ -609,9 +609,10 @@ async function generarYDescargarCertificado() {
       x: 628,
       y: height - 496,
       size: 11,
-      font: font,
+      font: fontBold,
       color: blackColor,
     });
+    
     
     // Descargar
     const pdfBytes = await pdfDoc.save();

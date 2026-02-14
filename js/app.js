@@ -537,7 +537,7 @@ async function generarYDescargarCertificado() {
     // Coordenadas (después de "con las siguientes coordenadas")
     const coordenadas = `RA: ${formData.ra}  |  Dec: ${formData.dec}`;
     page.drawText(coordenadas, {
-      x: 393,
+      x: 360,
       y: height - 289,
       size: 12,
       font: fontBold,
@@ -555,7 +555,7 @@ async function generarYDescargarCertificado() {
     
     // Nuevo nombre / renombrada como (después de "ha sido renombrada como")
     page.drawText(`${formData.nuevoNombre}`, {
-      x: 516,
+      x: 490,
       y: height - 406,
       size: 18,
       font: fontBold,

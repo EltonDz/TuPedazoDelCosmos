@@ -1,0 +1,25 @@
+.link-pedazo-cosmos {
+  /*color: #0077ff;*/
+  text-decoration: none;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.link-pedazo-cosmos::after {
+  content: "";
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background-color: #0077ff;
+  transition: width 0.3s ease;
+}
+
+.link-pedazo-cosmos:hover {
+  color: #9cccea;
+}
+
+.link-pedazo-cosmos:hover::after {
+  width: 100%;
+}

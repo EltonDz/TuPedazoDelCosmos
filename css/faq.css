@@ -1,0 +1,19 @@
+.faq-item {
+  border-bottom: 1px solid rgba(79, 195, 247, 0.2);
+  padding: 15px 0;
+}
+
+.faq-question {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--nasa-cyan);
+  font-weight: 500;
+}
+
+.faq-answer {
+  margin-top: 10px;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+}

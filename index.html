@@ -5,7 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TuPedazoDeCosmos.com</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
-  <link rel="stylesheet" href="css/styles.css">
+  <!-- <link rel="stylesheet" href="css/styles.css"> -->
+  <link rel="stylesheet" href="css/html-labels.css">
+  <link rel="stylesheet" href="css/certificate.css">
+  <link rel="stylesheet" href="css/download-panel.css">
+  <link rel="stylesheet" href="css/faq.css">
+  <link rel="stylesheet" href="css/form.css">
+  <link rel="stylesheet" href="css/language.css">
+  <link rel="stylesheet" href="css/link-style.css">
+  <link rel="stylesheet" href="css/logo.css">
+  <link rel="stylesheet" href="css/modal.css">
+  <link rel="stylesheet" href="css/nasa-btn.css">
+  <link rel="stylesheet" href="css/nav-bar.css">
+  <link rel="stylesheet" href="css/step-process.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
   <script src="https://www.paypal.com/sdk/js?client-id=Ae78PjwLRmjiwKIbKWg3OA4Achz9gC24B2j1KcMvr1K9KiG1CeXEyzqXvtM-XOBHODi4K8p6DZk1Di0r&currency=USD"></script>
@@ -22,7 +34,9 @@
       
       <!-- Título -->
       <div class="text-center flex-1 px-4">
-        <h1 class="text-3xl md:text-4xl font-bold glow-text">TuPedazoDelCosmos.com</h1>
+        <h1 class="text-3xl md:text-4xl font-bold glow-text">
+          <a href="https://tupedazodelcosmos.com" target="_blank" class="link-pedazo-cosmos">TuPedazoDelCosmos.com</a>
+        </h1>
         <p class="text-sm md:text-base text-blue-200 mt-1" data-translate="tagline">Explora el cielo, elige tu objeto astronómico y hazlo tuyo.</p>
       </div>
       
@@ -33,19 +47,24 @@
   <!-- Barra de Navegación -->
   <nav class="nav-bar py-2">
     <div class="container mx-auto flex flex-wrap justify-center items-center gap-2 md:gap-4">
-      <button class="nav-btn" onclick="openModal('inicio')">
+      <!-- <button class="nav-btn" onclick="openModal('inicio')"> -->
+      <button class="nav-btn" id="modal-inicio">
         <i class="fas fa-home mr-2"></i><span data-translate="nav_inicio">Inicio</span>
       </button>
-      <button class="nav-btn" onclick="openModal('rastrear')">
+      <!-- <button class="nav-btn" onclick="openModal('rastrear')"> -->
+      <button class="nav-btn" id="modal-rastrear">
         <i class="fas fa-search-location mr-2"></i><span data-translate="nav_rastrear">Rastrear</span>
       </button>
-      <button class="nav-btn" onclick="openModal('faq')">
+      <!-- <button class="nav-btn" onclick="openModal('faq')"> -->
+      <button class="nav-btn" id="modal-faq">
         <i class="fas fa-question-circle mr-2"></i><span data-translate="nav_faq">FAQ</span>
       </button>
-      <button class="nav-btn" onclick="openModal('pedido')">
+      <!-- <button class="nav-btn" onclick="openModal('pedido')"> -->
+      <button class="nav-btn" id="modal-pedido">
         <i class="fas fa-shopping-cart mr-2"></i><span data-translate="nav_pedido">Pedido</span>
       </button>
-      <button class="nav-btn" onclick="openModal('contacto')">
+      <!-- <button class="nav-btn" onclick="openModal('contacto')"> -->
+      <button class="nav-btn" id="modal-contacto">
         <i class="fas fa-envelope mr-2"></i><span data-translate="nav_contacto">Contacto</span>
       </button>
       
@@ -56,13 +75,16 @@
           <i class="fas fa-chevron-down ml-2 text-xs"></i>
         </button>
         <div class="language-dropdown-content">
-          <div class="language-option" onclick="changeLanguage('es')">
+          <!-- <div class="language-option" onclick="changeLanguage('es')"> -->
+          <div class="language-option" id="btn-es">
             <span>🇪🇸</span> Español
           </div>
-          <div class="language-option" onclick="changeLanguage('en')">
+          <!-- <div class="language-option" onclick="changeLanguage('en')"> -->
+          <div class="language-option" id="btn-en">
             <span>🇺🇸</span> English
           </div>
-          <div class="language-option" onclick="changeLanguage('pt')">
+          <!-- <div class="language-option" onclick="changeLanguage('pt')"> -->
+          <div class="language-option" id="btn-pt">
             <span>🇧🇷</span> Português
           </div>
         </div>
@@ -71,9 +93,11 @@
   </nav>
 
   <!-- Modal / Ventana Emergente -->
-  <div id="modal" class="modal-overlay" onclick="closeModalOutside(event)">
+  <!-- <div id="modal" class="modal-overlay" onclick="closeModalOutside(event)"> -->
+  <div id="modal" class="modal-overlay">
     <div class="modal-content" onclick="event.stopPropagation()">
-      <button class="modal-close" onclick="closeModal()">
+      <!-- <button class="modal-close" onclick="closeModal()"> -->
+      <button id="modal-cls" class="modal-close">
         <i class="fas fa-times"></i>
       </button>
       <div id="modal-body"></div>
@@ -82,14 +106,14 @@
 
   <main class="p-4 flex-1 flex flex-col gap-6 relative z-10">
     <!-- Stellarium Web Viewer -->
-    <div id="stellarium-container" class="w-full mb-8 rounded-lg overflow-hidden border-2 border-blue-500 nasa-card">
+    <!-- <div id="stellarium-container" class="w-full mb-8 rounded-lg overflow-hidden border-2 border-blue-500 nasa-card">
       <iframe 
         src="https://stellarium-web.org/" 
         class="w-full h-full" 
         frameborder="0" 
         allowfullscreen>
       </iframe>
-    </div>
+    </div> -->
 
     <!-- Instrucciones -->
     <div class="nasa-card p-6 rounded-lg">
@@ -142,6 +166,7 @@
           <i class="fas fa-arrow-right mr-2"></i>Continuar - Elegir Certificado
         </button>
       </div>
+      <div id="formMessage" class="text-red-400 mt-4 p-4 rounded-lg hidden" style="background:rgba(239, 68, 68, 0.2)"></div>
     </form>
 
     <!-- Lista de clientes -->
@@ -155,8 +180,10 @@
 
   <!-- Footer -->
   <footer class="text-center p-4 border-t border-blue-800 bg-opacity-50 relative z-10">
-    <p class="text-blue-300 text-sm">© 2026 TuPedazoDelCosmos.com - <span data-translate="footer_derechos">Todos los derechos reservados</span></p>
+    <p class="text-blue-300 text-sm">© 2026 
+      <a href="https://tupedazodelcosmos.com" target="_blank" class="link-pedazo-cosmos">TuPedazoDelCosmos.com</a>
+       - <span data-translate="footer_derechos">Todos los derechos reservados</span></p>
   </footer>
-  <script src="js/app.js"></script>
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>

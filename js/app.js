@@ -1,281 +1,70 @@
 // ==================== VARIABLES GLOBALES ====================
-let selectedCertificate = null;
-let formData = {};
-let clientes = JSON.parse(localStorage.getItem("clientes")) || [];
-let currentLanguage = localStorage.getItem('language') || 'es';
+// let selectedCertificate = null;
+// let formData = {};
+// let clientes = JSON.parse(localStorage.getItem("clientes")) || [];
+// let currentLanguage = localStorage.getItem('language') || 'es';
 
-// ==================== CARGAR LISTA DE CERTIFICADOS RECIENTES ====================
-document.addEventListener("DOMContentLoaded", function () {
-  mostrarPrimerosReg();
-});
+// ==================== METODOS ====================
+import { appVariables } from "./variables.js";
+import { mostrarPrimerosReg } from "./lista-recientes.js";
+import { changeLanguage, applyTranslations } from "./traducciones.js";
+import { openModal, closeModal, closeModalOutside } from "./modal.js"
 
-function mostrarPrimerosReg() {
-  fetch("https://script.google.com/macros/s/AKfycbxIrdP_fXuSI2iJlBLTRlYPB1sBnhbf7zwv45lQVmaMGaWsbwVgyB828rrcv4nVT_x5QQ/exec?action=getFirst10")
-    .then(response => response.json())
-    .then(datos => {
-      actualizarListaClientes(datos);
-    })
-    .catch(error => console.error(error));
-}
+// // ==================== TRADUCCIONES ====================
 
-function actualizarListaClientes(datos) {
-  const lista = document.getElementById("listaClientes");
-  lista.innerHTML = "";
+document.addEventListener("DOMContentLoaded", () => {
+
+  document.getElementById("btn-es")
+    .addEventListener("click", () => {
+      changeLanguage("es");
+    });
   
-  if (datos.length === 0) {
-    lista.innerHTML = '<li class="text-gray-500 italic">Aún no hay registros. ¡Sé el primero!</li>';
-    return;
-  }
-  
-  datos.forEach(c => {
-    let fecha = new Date(c[7]);
-
-    fecha = fecha.toLocaleDateString("es-ES", {
-      day: "numeric",
-      month: "long",
-      year: "numeric"
+    document.getElementById("btn-en")
+    .addEventListener("click", () => {
+      changeLanguage("en");
     });
 
-    const item = document.createElement("li");
-    item.innerHTML = `<span class="text-blue-300">${c[1]}</span> registró '<span class="text-yellow-300">${c[3]}</span>' el ${fecha}`;
-    lista.appendChild(item);
-  });
-}
+  document.getElementById("btn-pt")
+    .addEventListener("click", () => {
+      changeLanguage("pt");
+    });
 
-// ==================== TRADUCCIONES ====================
-const translations = {
-  es: {
-    tagline: "Explora el cielo, elige tu objeto astronómico y hazlo tuyo.",
-    nav_inicio: "Inicio",
-    nav_rastrear: "Rastrear",
-    nav_faq: "FAQ",
-    nav_pedido: "Pedido",
-    nav_contacto: "Contacto",
-    nav_idioma: "Idioma",
-    instrucciones_titulo: "¿Cómo seleccionar tu estrella?",
-    instruccion_1: "Navega por el cielo estelar con el visor interactivo.",
-    instruccion_2: "Haz clic sobre el objeto que te interese.",
-    instruccion_3: "En la esquina superior izquierda verás el nombre del objeto, su RA y Dec.",
-    instruccion_4: "Copia esos datos manualmente en el formulario de abajo.",
-    form_titulo: "Registra tu Estrella",
-    clientes_titulo: "Clientes que han adquirido su astro:",
-    footer_derechos: "Todos los derechos reservados",
-    modal_inicio_titulo: "Bienvenido a TuPedazoDeCosmos.com",
-    modal_inicio_contenido: `
-      <p class="mb-4">¡Bienvenido a la experiencia más única del universo!</p>
-      <p class="mb-4">En <strong>TuPedazoDeCosmos.com</strong> te ofrecemos la oportunidad de adoptar simbólicamente una estrella.</p>
-      <h4 class="text-blue-300 font-semibold mt-6 mb-2">¿Qué incluye tu compra?</h4>
-      <ul class="list-disc pl-5 space-y-2">
-        <li>Certificado digital personalizado en PDF</li>
-        <li>Coordenadas exactas de tu objeto celeste</li>
-        <li>Nombre personalizado para tu estrella</li>
-        <li>Registro permanente en nuestra base de datos</li>
-        <li>Número de serie único e irrepetible</li>
-      </ul>
-    `,
-    modal_rastrear_titulo: "Rastrear tu Pedido",
-    modal_faq_titulo: "Preguntas Frecuentes",
-    modal_pedido_titulo: "Estado de tu Pedido",
-    modal_contacto_titulo: "Contáctanos",
-    cert_titulo: "Elige tu Estilo de Certificado",
-    cert_descripcion: "Selecciona el diseño que más te guste:",
-    pago_titulo: "Procesar Pago",
-    descarga_titulo: "¡Tu Certificado está Listo!",
-    descarga_btn: "Descargar Certificado",
-    error_campos: "Por favor, completa todos los campos requeridos",
-    error_certificado: "Por favor, selecciona un certificado primero"
-  },
-  en: {
-    tagline: "Explore the sky, choose your astronomical object and make it yours.",
-    nav_inicio: "Home",
-    nav_rastrear: "Track",
-    nav_faq: "FAQ",
-    nav_pedido: "Order",
-    nav_contacto: "Contact",
-    nav_idioma: "Language",
-    instrucciones_titulo: "How to select your star?",
-    instruccion_1: "Navigate the starry sky with the interactive viewer.",
-    instruccion_2: "Click on the object you're interested in.",
-    instruccion_3: "In the upper left corner you'll see the object's name, its RA and Dec.",
-    instruccion_4: "Copy that data manually into the form below.",
-    form_titulo: "Register your Star",
-    clientes_titulo: "Customers who have acquired their star:",
-    footer_derechos: "All rights reserved",
-    modal_inicio_titulo: "Welcome to TuPedazoDeCosmos.com",
-    modal_inicio_contenido: `
-      <p class="mb-4">Welcome to the most unique experience in the universe!</p>
-      <p class="mb-4">At <strong>TuPedazoDeCosmos.com</strong> we offer you the opportunity to symbolically adopt a star.</p>
-      <h4 class="text-blue-300 font-semibold mt-6 mb-2">What's included?</h4>
-      <ul class="list-disc pl-5 space-y-2">
-        <li>Personalized digital PDF certificate</li>
-        <li>Exact coordinates of your celestial object</li>
-        <li>Custom name for your star</li>
-        <li>Permanent registration in our database</li>
-        <li>Unique serial number</li>
-      </ul>
-    `,
-    modal_rastrear_titulo: "Track your Order",
-    modal_faq_titulo: "Frequently Asked Questions",
-    modal_pedido_titulo: "Your Order Status",
-    modal_contacto_titulo: "Contact Us",
-    cert_titulo: "Choose your Certificate Style",
-    cert_descripcion: "Select the design you like best:",
-    pago_titulo: "Process Payment",
-    descarga_titulo: "Your Certificate is Ready!",
-    descarga_btn: "Download Certificate",
-    error_campos: "Please fill in all required fields",
-    error_certificado: "Please select a certificate first"
-  },
-  pt: {
-    tagline: "Explore o céu, escolha seu objeto astronômico e faça-o seu.",
-    nav_inicio: "Início",
-    nav_rastrear: "Rastrear",
-    nav_faq: "FAQ",
-    nav_pedido: "Pedido",
-    nav_contacto: "Contato",
-    nav_idioma: "Idioma",
-    instrucciones_titulo: "Como selecionar sua estrela?",
-    instruccion_1: "Navegue pelo céu estrelado com o visualizador interativo.",
-    instruccion_2: "Clique no objeto que lhe interessa.",
-    instruccion_3: "No canto superior esquerdo você verá o nome do objeto, sua AR e Dec.",
-    instruccion_4: "Copie esses dados manualmente no formulário abaixo.",
-    form_titulo: "Registre sua Estrela",
-    clientes_titulo: "Clientes que adquiriram seu astro:",
-    footer_derechos: "Todos os direitos reservados",
-    modal_inicio_titulo: "Bem-vindo ao TuPedazoDeCosmos.com",
-    modal_inicio_contenido: `
-      <p class="mb-4">Bem-vindo à experiência mais única do universo!</p>
-      <p class="mb-4">No <strong>TuPedazoDeCosmos.com</strong> oferecemos a oportunidade de adotar simbolicamente uma estrela.</p>
-      <h4 class="text-blue-300 font-semibold mt-6 mb-2">O que está incluído?</h4>
-      <ul class="list-disc pl-5 space-y-2">
-        <li>Certificado digital personalizado em PDF</li>
-        <li>Coordenadas exatas do seu objeto celeste</li>
-        <li>Nome personalizado para sua estrela</li>
-        <li>Registro permanente em nosso banco de dados</li>
-        <li>Número de série único</li>
-      </ul>
-    `,
-    modal_rastrear_titulo: "Rastrear seu Pedido",
-    modal_faq_titulo: "Perguntas Frequentes",
-    modal_pedido_titulo: "Status do seu Pedido",
-    modal_contacto_titulo: "Entre em Contato",
-    cert_titulo: "Escolha seu Estilo de Certificado",
-    cert_descripcion: "Selecione o design que mais gosta:",
-    pago_titulo: "Processar Pagamento",
-    descarga_titulo: "Seu Certificado está Pronto!",
-    descarga_btn: "Baixar Certificado",
-    error_campos: "Por favor, preencha todos os campos obrigatórios",
-    error_certificado: "Por favor, selecione um certificado primeiro"
-  }
-};
-
-// ==================== FUNCIONES DE IDIOMA ====================
-function changeLanguage(lang) {
-  currentLanguage = lang;
-  localStorage.setItem('language', lang);
-  document.documentElement.lang = lang;
-  applyTranslations();
-  console.log('Idioma cambiado a:', lang);
-}
-
-function applyTranslations() {
-  const t = translations[currentLanguage];
-  document.querySelectorAll('[data-translate]').forEach(el => {
-    const key = el.getAttribute('data-translate');
-    if (t[key]) el.textContent = t[key];
-  });
-}
+});
 
 // ==================== FUNCIONES DE MODAL ====================
-function openModal(section) {
-  console.log('Abriendo modal:', section);
-  const modal = document.getElementById('modal');
-  const modalBody = document.getElementById('modal-body');
-  const t = translations[currentLanguage];
-  
-  let content = '';
-  
-  switch(section) {
-    case 'inicio':
-      content = `
-        <h2 class="modal-title"><i class="fas fa-star mr-2"></i>${t.modal_inicio_titulo}</h2>
-        <div>${t.modal_inicio_contenido}</div>
-      `;
-      break;
-    case 'rastrear':
-      content = `
-        <h2 class="modal-title"><i class="fas fa-search mr-2"></i>${t.modal_rastrear_titulo}</h2>
-        <p class="mb-4">Ingresa tu número de serie:</p>
-        <div class="flex gap-2 mb-4">
-          <input type="text" id="trackingInput" class="nasa-input flex-1" placeholder="COSMOS-XXXXXX">
-          <button class="nasa-btn" onclick="rastrearPedido()"><i class="fas fa-search"></i></button>
-        </div>
-        <div id="trackingResult" class="mt-4 p-4 rounded-lg hidden"></div>
-        <button class="nasa-btn" id="pdfButton" onclick="regenerarPDF()" style="display:none; margin:15px auto;">
-          Regenerar Certificado
-        </button>
-      `;
-      break;
-    case 'faq':
-       content = `
-        <h2 class="modal-title"><i class="fas fa-question-circle mr-2"></i>${t.modal_faq_titulo}</h2>
-        <div class="faq-item">
-          <div class="faq-question"><span>¿Es oficial el registro?</span></div>
-          <div class="faq-answer">El registro es simbólico y conmemorativo. La Unión Astronómica Internacional (IAU) es el único organismo que asigna nombres oficiales a los cuerpos celestes. Nuestro servicio ofrece una forma única y personal de conectar con el cosmos.</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-question"><span>¿Qué recibo al comprar?</span></div>
-          <div class="faq-answer">Recibirás un certificado PDF descargable con el nombre de tu estrella, coordenadas celestes (RA y Dec), fecha de registro y un número de serie único.</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-question"><span>¿Puedo regalar una estrella?</span></div>
-          <div class="faq-answer">¡Por supuesto! Es un regalo perfecto para cumpleaños, aniversarios, San Valentín o cualquier ocasión especial. Solo ingresa el nombre de la persona a quien deseas obsequiarle su pedazo de cosmos.</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-question"><span>¿Cómo encuentro las coordenadas?</span></div>
-          <div class="faq-answer"> Usa el visor Stellarium en nuestra página principal. Haz clic en cualquier estrella u objeto y verás su información en la esquina superior izquierda, incluyendo RA (Ascensión Recta) y Dec (Declinación).</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-question"><span>¿Puedo ver mi estrella desde la Tierra?</span></div>
-          <div class="faq-answer">Depende del objeto que elijas. Muchas estrellas son visibles a simple vista o con telescopios pequeños. El visor Stellarium te mostrará la ubicación exacta en el cielo según tu ubicación geográfica.</div>
-        </div>
-      `;
-      break;
-    case 'pedido':
-      content = `
-        <h2 class="modal-title"><i class="fas fa-shopping-cart mr-2"></i>${t.modal_pedido_titulo}</h2>
-        <div id="pedidosList" class="space-y-3"></div>
-      `;
-      setTimeout(cargarListaPedidos, 100);
-      break;
-    case 'contacto':
-      content = `
-        <h2 class="modal-title"><i class="fas fa-envelope mr-2"></i>${t.modal_contacto_titulo}</h2>
-        <form class="space-y-4">
-          <input type="text" class="nasa-input" placeholder="Tu nombre" required>
-          <input type="email" class="nasa-input" placeholder="Tu correo" required>
-          <textarea class="nasa-input" rows="4" placeholder="Tu mensaje..." required></textarea>
-          <button type="button" class="nasa-btn w-full" onclick="alert('¡Mensaje enviado!'); closeModal();">
-            <i class="fas fa-paper-plane mr-2"></i>Enviar
-          </button>
-        </form>
-      `;
-      break;
-  }
-  
-  modalBody.innerHTML = content;
-  modal.classList.add('active');
-  document.body.style.overflow = 'hidden';
-}
 
-function closeModal() {
-  document.getElementById('modal').classList.remove('active');
-  document.body.style.overflow = 'auto';
-}
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("modal-inicio")
+    .addEventListener("click", () => {
+      openModal("inicio");
+    });
+  document.getElementById("modal-rastrear")
+    .addEventListener("click", () => {
+      openModal("rastrear");
+    });
+  document.getElementById("modal-faq")
+    .addEventListener("click", () => {
+      openModal("faq");
+    });
+  document.getElementById("modal-pedido")
+    .addEventListener("click", () => {
+      openModal("pedido");
+    });
+  document.getElementById("modal-contacto")
+    .addEventListener("click", () => {
+      openModal("contacto");
+    });
 
-function closeModalOutside(event) {
-  if (event.target.id === 'modal') closeModal();
-}
+  const mod = document.getElementById("modal");
+  mod.addEventListener("click", (event) => {
+    closeModalOutside(event);
+  });
+
+  document.getElementById("modal-cls")
+    .addEventListener("click", () => {
+      closeModal();
+    })
+});
 
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeModal();
@@ -296,23 +85,51 @@ function validarYMostrarCertificados() {
   // const dec = form.dec.value.trim();
   const nuevoNombre = form.nuevoNombre.value.trim();
   const magnitud = form.magnitud.value.trim() || 'N/A';
+  const messageDiv = document.getElementById("formMessage");
   
-  if (!nombre || !objeto || !ra1 || !ra2 || !ra3 || !dec1 || !dec2 || !dec3 || !nuevoNombre) {
-    alert(translations[currentLanguage].error_campos);
+  const inputs = document.querySelectorAll("#registroForm input");
+  let hasError = false;
+
+  inputs.forEach(input => {
+    if (!input.value.trim()) {
+      input.classList.add("input-error");
+      hasError = true;
+    } else {
+      input.classList.remove("input-error");
+    }
+  });
+  
+  if (hasError) {
+  // if (!nombre || !objeto || !ra1 || !ra2 || !ra3 || !dec1 || !dec2 || !dec3 || !nuevoNombre) {
+    // alert(translations[currentLanguage].error_campos);
+    let messageTimer;
+    clearTimeout(messageTimer);
+
+    messageDiv.textContent = translations[appVariables.currentLanguage].error_campos;
+    messageDiv.classList.remove("hidden");
+
+    messageTimer = setTimeout(() => {
+      messageDiv.classList.add("hidden");
+    }, 3000);
+    
     return;
   }
+
+  messageDiv.textContent = "";
 
   const ra = `${ra1}h ${ra2}m ${ra3}s`
   const dec = `${dec1}º ${dec2}' ${dec3}"`
   
-  formData = { nombre, objeto, ra, dec, nuevoNombre, magnitud };
+  appVariables.formData = { nombre, objeto, ra, dec, nuevoNombre, magnitud };
   mostrarSeleccionCertificados();
 }
 
 function mostrarSeleccionCertificados() {
-  const t = translations[currentLanguage];
+  const t = translations[appVariables.currentLanguage];
   const modal = document.getElementById('modal');
   const modalBody = document.getElementById('modal-body');
+
+  appVariables.selectedCertificate = null;
   
   modalBody.innerHTML = `
     <h2 class="modal-title"><i class="fas fa-certificate mr-2"></i>${t.cert_titulo}</h2>
@@ -344,6 +161,8 @@ function mostrarSeleccionCertificados() {
         Continuar al Pago<i class="fas fa-arrow-right ml-2"></i>
       </button>
     </div>
+
+    <div id="messNotSelected" class="text-red-400 mt-4 p-4 rounded-lg hidden" style="background:rgba(239, 68, 68, 0.2)"></div>
   `;
   
   modal.classList.add('active');
@@ -353,22 +172,31 @@ function mostrarSeleccionCertificados() {
 function seleccionarCertificado(num) {
   document.querySelectorAll('.certificate-option').forEach(el => el.classList.remove('selected'));
   document.getElementById(`cert-${num}`).classList.add('selected');
-  selectedCertificate = num;
+  appVariables.selectedCertificate = num;
   console.log('Certificado seleccionado:', num);
 }
 
 function continuarAlPago() {
-  if (!selectedCertificate) {
-    alert(translations[currentLanguage].error_certificado);
+  if (!appVariables.selectedCertificate) {
+    // alert(translations[currentLanguage].error_certificado);
+    document.getElementById("messNotSelected").classList.remove("hidden")
+    document.getElementById("messNotSelected").textContent = translations[appVariables.currentLanguage].error_certificado;
+
+    let messageTimer;
+    clearTimeout(messageTimer);
+
+    messageTimer = setTimeout(() => {
+      messageDiv.classList.add("hidden");
+    }, 3000);
     return;
   }
   mostrarPanelPago();
 }
 
 function mostrarPanelPago() {
-  const t = translations[currentLanguage];
+  const t = translations[appVariables.currentLanguage];
   const modalBody = document.getElementById('modal-body');
-  
+  /*
   modalBody.innerHTML = `
     <h2 class="modal-title"><i class="fas fa-credit-card mr-2"></i>${t.pago_titulo}</h2>
     
@@ -383,19 +211,19 @@ function mostrarPanelPago() {
       <h3 class="text-lg font-semibold mb-3 text-blue-300">Resumen de tu pedido:</h3>
       <div class="resumen-item">
         <span>Estrella:</span>
-        <span class="text-yellow-300">"${formData.nuevoNombre}"</span>
+        <span class="text-yellow-300">"${appVariables.formData.nuevoNombre}"</span>
       </div>
       <div class="resumen-item">
         <span>Objeto original:</span>
-        <span>${formData.objeto}</span>
+        <span>${appVariables.formData.objeto}</span>
       </div>
       <div class="resumen-item">
         <span>Coordenadas:</span>
-        <span>RA: ${formData.ra} | Dec: ${formData.dec}</span>
+        <span>RA: ${appVariables.formData.ra} | Dec: ${appVariables.formData.dec}</span>
       </div>
       <div class="resumen-item">
         <span>Certificado:</span>
-        <span>Estilo ${selectedCertificate}</span>
+        <span>Estilo ${appVariables.selectedCertificate}</span>
       </div>
       <div class="resumen-total">
         <span>Total:</span>
@@ -419,7 +247,7 @@ function mostrarPanelPago() {
       createOrder: function(data, actions) {
         return actions.order.create({
           purchase_units: [{
-            description: "Certificado Estelar - " + formData.nuevoNombre,
+            description: "Certificado Estelar - " + appVariables.formData.nuevoNombre,
             amount: { currency_code: "USD", value: 12 }
           }]
         });
@@ -434,11 +262,12 @@ function mostrarPanelPago() {
         alert("Hubo un error con el pago. Intenta de nuevo.");
       }
     }).render('#paypal-button-container-modal');
-  }, 100);
+  }, 100);*/
+  procesarCompraExitosa();
 }
 
 function procesarCompraExitosa() {
-  const t = translations[currentLanguage];
+  const t = translations[appVariables.currentLanguage];
   const fechaActual = new Date().toISOString();
   let fechaCert = new Date();
   const serieID = `COSMOS-${Date.now().toString(36).toUpperCase()}`;
@@ -450,34 +279,34 @@ function procesarCompraExitosa() {
   });
   
   // Guardar cliente
-  clientes.push({
-    nombre: formData.nombre,
-    nuevoNombre: formData.nuevoNombre,
-    objeto: formData.objeto,
-    ra: formData.ra,
-    dec: formData.dec,
-    magnitud: formData.magnitud,
+  appVariables.clientes.push({
+    nombre: appVariables.formData.nombre,
+    nuevoNombre: appVariables.formData.nuevoNombre,
+    objeto: appVariables.formData.objeto,
+    ra: appVariables.formData.ra,
+    dec: appVariables.formData.dec,
+    magnitud: appVariables.formData.magnitud,
     fecha: fechaActual,
     id: serieID,
-    certificado: selectedCertificate
+    certificado: appVariables.selectedCertificate
   });
-  localStorage.setItem("clientes", JSON.stringify(clientes));
+  localStorage.setItem("clientes", JSON.stringify(appVariables.clientes));
   // actualizarListaClientes();
   
   // Guardar datos para descarga
-  formData.fecha = fechaCert;
-  formData.serieID = serieID;
+  appVariables.formData.fecha = fechaCert;
+  appVariables.formData.serieID = serieID;
 
   const data = new URLSearchParams({
     id: serieID,
-    nombre: formData.nombre,
-    objeto: formData.objeto,
-    nuevo_nombre: formData.nuevoNombre,
-    ra: formData.ra,
-    dec: "'"+formData.dec,
-    mag: formData.magnitud,
+    nombre: appVariables.formData.nombre,
+    objeto: appVariables.formData.objeto,
+    nuevo_nombre: appVariables.formData.nuevoNombre,
+    ra: appVariables.formData.ra,
+    dec: "'"+appVariables.formData.dec,
+    mag: appVariables.formData.magnitud,
     fecha: fechaActual,
-    tipo: selectedCertificate
+    tipo: appVariables.selectedCertificate
   });
 
   fetch("https://script.google.com/macros/s/AKfycbxIrdP_fXuSI2iJlBLTRlYPB1sBnhbf7zwv45lQVmaMGaWsbwVgyB828rrcv4nVT_x5QQ/exec", {
@@ -494,7 +323,7 @@ function procesarCompraExitosa() {
 }
 
 function mostrarPanelDescarga() {
-  const t = translations[currentLanguage];
+  const t = translations[appVariables.currentLanguage];
   const modalBody = document.getElementById('modal-body');
   
   modalBody.innerHTML = `
@@ -512,7 +341,7 @@ function mostrarPanelDescarga() {
       <h2 class="text-2xl font-bold text-green-400 mb-4">${t.descarga_titulo}</h2>
       <p class="text-gray-300 mb-6">
         ¡Pago confirmado! Tu certificado personalizado está listo.<br>
-        <span class="text-yellow-300">ID: ${formData.serieID}</span>
+        <span class="text-yellow-300">ID: ${appVariables.formData.serieID}</span>
       </p>
       <button class="download-btn" onclick="generarYDescargarCertificado()">
         <i class="fas fa-download"></i>
@@ -529,7 +358,7 @@ async function generarYDescargarCertificado() {
     const { PDFDocument, rgb, StandardFonts } = PDFLib;
     
     // Cargar el PDF de plantilla
-    const pdfUrl = `assets/certificados/CERTIFICADO-${selectedCertificate}.pdf`;
+    const pdfUrl = `assets/certificados/CERTIFICADO-${appVariables.selectedCertificate}.pdf`;
     let pdfDoc;
     
     try {
@@ -559,7 +388,7 @@ async function generarYDescargarCertificado() {
     
     // Nombre de la estrella (después de "Este certificado comprueba que la estrella")
     // Posición aproximada: centrado, línea debajo del texto introductorio
-    page.drawText(formData.objeto, {
+    page.drawText(appVariables.formData.objeto, {
       x: 428,
       y: height - 235,
       size: 16,
@@ -568,7 +397,7 @@ async function generarYDescargarCertificado() {
     });
     
     // Coordenadas (después de "con las siguientes coordenadas")
-    const coordenadas = `RA: ${formData.ra}  |  Dec: ${formData.dec}`;
+    const coordenadas = `RA: ${appVariables.formData.ra}  |  Dec: ${appVariables.formData.dec}`;
     page.drawText(coordenadas, {
       x: 360,
       y: height - 289,
@@ -578,7 +407,7 @@ async function generarYDescargarCertificado() {
     });
     
     // Magnitud (después de "y magnitud aparente")
-    page.drawText(formData.magnitud || 'N/A', {
+    page.drawText(appVariables.formData.magnitud || 'N/A', {
       x: 372,
       y: height - 342,
       size: 12,
@@ -587,7 +416,7 @@ async function generarYDescargarCertificado() {
     });
     
     // Nuevo nombre / renombrada como (después de "ha sido renombrada como")
-    page.drawText(`${formData.nuevoNombre}`, {
+    page.drawText(`${appVariables.formData.nuevoNombre}`, {
       x: 490,
       y: height - 406,
       size: 18,
@@ -596,7 +425,7 @@ async function generarYDescargarCertificado() {
     });
     
     // Fecha (parte inferior izquierda)
-    page.drawText(formData.fecha, {
+    page.drawText(appVariables.formData.fecha, {
       x: 355,
       y: height - 496,
       size: 11,
@@ -605,7 +434,7 @@ async function generarYDescargarCertificado() {
     });
     
     // Clave de registro (parte inferior derecha)
-    page.drawText(formData.serieID, {
+    page.drawText(appVariables.formData.serieID, {
       x: 628,
       y: height - 496,
       size: 11,
@@ -621,7 +450,7 @@ async function generarYDescargarCertificado() {
     
     const a = document.createElement('a');
     a.href = url;
-    a.download = `Certificado_${formData.nuevoNombre.replace(/\s+/g, '_')}.pdf`;
+    a.download = `Certificado_${appVariables.formData.nuevoNombre.replace(/\s+/g, '_')}.pdf`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -629,8 +458,8 @@ async function generarYDescargarCertificado() {
     
     // Limpiar formulario
     document.getElementById('registroForm').reset();
-    selectedCertificate = null;
-    formData = {};
+    appVariables.selectedCertificate = null;
+    appVariables.formData = {};
     
   } catch (error) {
     console.error('Error generando PDF:', error);
@@ -646,19 +475,19 @@ function generarCertificadoAlternativo() {
     =====================================
     
     Este certificado comprueba que la estrella:
-    ${formData.objeto}
+    ${appVariables.formData.objeto}
     
     Con coordenadas:
-    RA: ${formData.ra}
-    Dec: ${formData.dec}
+    RA: ${appVariables.formData.ra}
+    Dec: ${appVariables.formData.dec}
     
-    Magnitud aparente: ${formData.magnitud}
+    Magnitud aparente: ${appVariables.formData.magnitud}
     
     Ha sido renombrada como:
-    "${formData.nuevoNombre}"
+    "${appVariables.formData.nuevoNombre}"
     
-    Fecha: ${formData.fecha}
-    Clave de registro: ${formData.serieID}
+    Fecha: ${appVariables.formData.fecha}
+    Clave de registro: ${appVariables.formData.serieID}
     
     TuPedazoDeCosmos.com
   `;
@@ -668,172 +497,172 @@ function generarCertificadoAlternativo() {
   win.print();
 }
 
-// ==================== FUNCIONES AUXILIARES ====================
-function rastrearPedido() {
-  const input = document.getElementById('trackingInput');
-  //const result = document.getElementById('trackingResult');
-  const searchId = input.value.trim().toUpperCase();
+// // ==================== FUNCIONES AUXILIARES ====================
+// function rastrearPedido() {
+//   const input = document.getElementById('trackingInput');
+//   //const result = document.getElementById('trackingResult');
+//   const searchId = input.value.trim().toUpperCase();
   
-  fetch(`${"https://script.google.com/macros/s/AKfycbxIrdP_fXuSI2iJlBLTRlYPB1sBnhbf7zwv45lQVmaMGaWsbwVgyB828rrcv4nVT_x5QQ/exec"}?id=${searchId}`)
-    .then(res => res.json())
-    .then(data => {
-      regenCertificado(data, searchId);
-    })
-    .catch(console.error);
-}
+//   fetch(`${"https://script.google.com/macros/s/AKfycbxIrdP_fXuSI2iJlBLTRlYPB1sBnhbf7zwv45lQVmaMGaWsbwVgyB828rrcv4nVT_x5QQ/exec"}?id=${searchId}`)
+//     .then(res => res.json())
+//     .then(data => {
+//       regenCertificado(data, searchId);
+//     })
+//     .catch(console.error);
+// }
 
-let cliente_actual = null;
+// // let cliente_actual = null;
 
-function regenCertificado(data, sid) {
-  const result = document.getElementById('trackingResult');
-  const pdfButton = document.getElementById("pdfButton");
+// function regenCertificado(data, sid) {
+//   const result = document.getElementById('trackingResult');
+//   const pdfButton = document.getElementById("pdfButton");
   
-  pdfButton.style.display = "none";
+//   pdfButton.style.display = "none";
 
-  if (!sid) {
-    result.innerHTML = '<p class="text-yellow-400">Ingresa un número de serie.</p>';
-    result.classList.remove('hidden');
-    result.style.background = 'rgba(234, 179, 8, 0.2)';
-    return;
-  }
+//   if (!sid) {
+//     result.innerHTML = '<p class="text-yellow-400">Ingresa un número de serie.</p>';
+//     result.classList.remove('hidden');
+//     result.style.background = 'rgba(234, 179, 8, 0.2)';
+//     return;
+//   }
 
-  if (data.length) {
-    cliente_actual = data[0];
-    result.innerHTML = `
-      <div class="text-green-400 mb-2"><i class="fas fa-check-circle mr-2"></i>¡Encontrado!</div>
-      <p><strong>Cliente:</strong> ${cliente_actual.nombre}</p>
-      <p><strong>Objeto:</strong> ${cliente_actual.objeto}</p>
-      <p><strong>Estrella:</strong> ${cliente_actual.nuevo_nombre}</p>
-      <p><strong>Fecha:</strong> ${cliente_actual.fecha}</p>
-    `;
-    pdfButton.style.display = "inline-block";
-    result.style.background = 'rgba(34, 197, 94, 0.2)';
-  } else {
-    result.innerHTML = '<p class="text-red-400">No se encontró ese registro.</p>';
-    cliente_actual = null;
-    pdfButton.style.display = "none";
-    result.style.background = 'rgba(239, 68, 68, 0.2)';
-  }
-  result.classList.remove('hidden');
-}
+//   if (data.length) {
+//     cliente_actual = data[0];
+//     result.innerHTML = `
+//       <div class="text-green-400 mb-2"><i class="fas fa-check-circle mr-2"></i>¡Encontrado!</div>
+//       <p><strong>Cliente:</strong> ${cliente_actual.nombre}</p>
+//       <p><strong>Objeto:</strong> ${cliente_actual.objeto}</p>
+//       <p><strong>Estrella:</strong> ${cliente_actual.nuevo_nombre}</p>
+//       <p><strong>Fecha:</strong> ${cliente_actual.fecha}</p>
+//     `;
+//     pdfButton.style.display = "inline-block";
+//     result.style.background = 'rgba(34, 197, 94, 0.2)';
+//   } else {
+//     result.innerHTML = '<p class="text-red-400">No se encontró ese registro.</p>';
+//     cliente_actual = null;
+//     pdfButton.style.display = "none";
+//     result.style.background = 'rgba(239, 68, 68, 0.2)';
+//   }
+//   result.classList.remove('hidden');
+// }
 
-async function regenerarPDF() {
-  try {
-    const { PDFDocument, rgb, StandardFonts } = PDFLib;
+// async function regenerarPDF() {
+//   try {
+//     const { PDFDocument, rgb, StandardFonts } = PDFLib;
     
-    // Cargar el PDF de plantilla
-    const pdfUrl = `assets/certificados/CERTIFICADO-${cliente_actual.tipo}.pdf`;
-    let pdfDoc;
+//     // Cargar el PDF de plantilla
+//     const pdfUrl = `assets/certificados/CERTIFICADO-${cliente_actual.tipo}.pdf`;
+//     let pdfDoc;
     
-    try {
-      const existingPdfBytes = await fetch(pdfUrl).then(res => {
-        if (!res.ok) throw new Error('PDF no encontrado');
-        return res.arrayBuffer();
-      });
-      pdfDoc = await PDFDocument.load(existingPdfBytes);
-    } catch (e) {
-      console.log('No se puede crear certificado.');
-    }
+//     try {
+//       const existingPdfBytes = await fetch(pdfUrl).then(res => {
+//         if (!res.ok) throw new Error('PDF no encontrado');
+//         return res.arrayBuffer();
+//       });
+//       pdfDoc = await PDFDocument.load(existingPdfBytes);
+//     } catch (e) {
+//       console.log('No se puede crear certificado.');
+//     }
     
-    const pages = pdfDoc.getPages();
-    const page = pages[0];
-    const { width, height } = page.getSize();
+//     const pages = pdfDoc.getPages();
+//     const page = pages[0];
+//     const { width, height } = page.getSize();
     
-    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-    const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+//     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+//     const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
     
-    // Coordenadas basadas en la imagen del certificado que proporcionaste
-    // Ajustadas para un PDF de aproximadamente 842x595 (A4 horizontal)
+//     // Coordenadas basadas en la imagen del certificado que proporcionaste
+//     // Ajustadas para un PDF de aproximadamente 842x595 (A4 horizontal)
     
-    const blackColor = rgb(0.1, 0.2, 0.3);
+//     const blackColor = rgb(0.1, 0.2, 0.3);
     
-    // Nombre de la estrella (después de "Este certificado comprueba que la estrella")
-    // Posición aproximada: centrado, línea debajo del texto introductorio
-    page.drawText(cliente_actual.objeto, {
-      x: 350,
-      y: height - 235,
-      size: 16,
-      font: fontBold,
-      color: blackColor,
-    });
+//     // Nombre de la estrella (después de "Este certificado comprueba que la estrella")
+//     // Posición aproximada: centrado, línea debajo del texto introductorio
+//     page.drawText(cliente_actual.objeto, {
+//       x: 350,
+//       y: height - 235,
+//       size: 16,
+//       font: fontBold,
+//       color: blackColor,
+//     });
     
-    // Coordenadas (después de "con las siguientes coordenadas")
-    const coordenadas = `RA: ${cliente_actual.ra}  |  Dec: ${cliente_actual.dec}`;
-    page.drawText(coordenadas, {
-      x: 378,
-      y: height - 290,
-      size: 12,
-      font: font,
-      color: blackColor,
-    });
+//     // Coordenadas (después de "con las siguientes coordenadas")
+//     const coordenadas = `RA: ${cliente_actual.ra}  |  Dec: ${cliente_actual.dec}`;
+//     page.drawText(coordenadas, {
+//       x: 378,
+//       y: height - 290,
+//       size: 12,
+//       font: font,
+//       color: blackColor,
+//     });
     
-    // Magnitud (después de "y magnitud aparente")
-    page.drawText(`${cliente_actual.mag}` || 'N/A', {
-      x: 355,
-      y: height - 346,
-      size: 12,
-      font: font,
-      color: blackColor,
-    });
+//     // Magnitud (después de "y magnitud aparente")
+//     page.drawText(`${cliente_actual.mag}` || 'N/A', {
+//       x: 355,
+//       y: height - 346,
+//       size: 12,
+//       font: font,
+//       color: blackColor,
+//     });
     
-    // Nuevo nombre / renombrada como (después de "ha sido renombrada como")
-    page.drawText(`"${cliente_actual.nuevo_nombre}"`, {
-      x: 500,
-      y: height - 407,
-      size: 18,
-      font: fontBold,
-      color: blackColor,
-    });
+//     // Nuevo nombre / renombrada como (después de "ha sido renombrada como")
+//     page.drawText(`"${cliente_actual.nuevo_nombre}"`, {
+//       x: 500,
+//       y: height - 407,
+//       size: 18,
+//       font: fontBold,
+//       color: blackColor,
+//     });
     
-    // Fecha (parte inferior izquierda)
-    let fecha = new Date(cliente_actual.fecha);
+//     // Fecha (parte inferior izquierda)
+//     let fecha = new Date(cliente_actual.fecha);
 
-    fecha = fecha.toLocaleDateString("es-ES", {
-      day: "numeric",
-      month: "long",
-      year: "numeric"
-    });
+//     fecha = fecha.toLocaleDateString("es-ES", {
+//       day: "numeric",
+//       month: "long",
+//       year: "numeric"
+//     });
 
-    page.drawText(fecha, {
-      x: 350,
-      y: height - 500,
-      size: 11,
-      font: font,
-      color: blackColor,
-    });
+//     page.drawText(fecha, {
+//       x: 350,
+//       y: height - 500,
+//       size: 11,
+//       font: font,
+//       color: blackColor,
+//     });
     
-    // Clave de registro (parte inferior derecha)
-    page.drawText(cliente_actual.id, {
-      x: 635,
-      y: height - 500,
-      size: 11,
-      font: font,
-      color: blackColor,
-    });
+//     // Clave de registro (parte inferior derecha)
+//     page.drawText(cliente_actual.id, {
+//       x: 635,
+//       y: height - 500,
+//       size: 11,
+//       font: font,
+//       color: blackColor,
+//     });
     
-    // Descargar
-    const pdfBytes = await pdfDoc.save();
-    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-    const url = URL.createObjectURL(blob);
+//     // Descargar
+//     const pdfBytes = await pdfDoc.save();
+//     const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+//     const url = URL.createObjectURL(blob);
 
-    window.open(url, "_blank");
-  } catch (error) {
-    console.error('Error generando PDF:', error);
-    alert('Error al generar el certificado. Intentando método alternativo...');
-    generarCertificadoAlternativo();
-  }
-}
+//     window.open(url, "_blank");
+//   } catch (error) {
+//     console.error('Error generando PDF:', error);
+//     alert('Error al generar el certificado. Intentando método alternativo...');
+//     generarCertificadoAlternativo();
+//   }
+// }
 
 function cargarListaPedidos() {
   const container = document.getElementById('pedidosList');
   if (!container) return;
   
-  if (clientes.length === 0) {
+  if (appVariables.clientes.length === 0) {
     container.innerHTML = '<p class="text-gray-400">No hay pedidos registrados.</p>';
     return;
   }
   
-  container.innerHTML = clientes.map(c => `
+  container.innerHTML = appVariables.clientes.map(c => `
     <div class="nasa-card p-3 rounded-lg">
       <p class="text-blue-300 font-semibold">${c.nuevoNombre}</p>
       <p class="text-sm text-gray-400">Por: ${c.nombre} | ${c.fecha}</p>
@@ -846,5 +675,6 @@ function cargarListaPedidos() {
 document.addEventListener('DOMContentLoaded', function() {
   console.log('Página cargada');
   applyTranslations();
-  actualizarListaClientes();
+  // actualizarListaClientes();
+  mostrarPrimerosReg();
 });

@@ -1,0 +1,66 @@
+:root {
+  --nasa-dark-blue: #0b1526;
+  --nasa-blue: #0b3d91;
+  --nasa-light-blue: #1e90ff;
+  --nasa-cyan: #00d4ff;
+  --nasa-accent: #4fc3f7;
+  --nasa-glow: rgba(30, 144, 255, 0.3);
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, var(--nasa-dark-blue) 0%, #0d2137 50%, #0b1526 100%);
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, white, transparent),
+    radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 90px 40px, white, transparent),
+    radial-gradient(2px 2px at 160px 120px, rgba(255,255,255,0.9), transparent),
+    radial-gradient(1px 1px at 230px 80px, white, transparent),
+    radial-gradient(2px 2px at 300px 150px, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1px 1px at 350px 200px, white, transparent);
+  background-repeat: repeat;
+  background-size: 400px 400px;
+  animation: twinkle 5s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+#stellarium-container {
+  height: 85vh;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  #stellarium-container {
+    height: 70vh;
+  }
+}
+
+.main-header {
+  background: linear-gradient(180deg, var(--nasa-blue) 0%, var(--nasa-dark-blue) 100%);
+  border-bottom: 2px solid var(--nasa-cyan);
+  box-shadow: 0 4px 20px var(--nasa-glow);
+  position: relative;
+  z-index: 100;
+}
+
+.glow-text {
+  text-shadow: 0 0 10px var(--nasa-cyan), 0 0 20px var(--nasa-glow);
+}

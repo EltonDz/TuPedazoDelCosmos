@@ -1,0 +1,48 @@
+/* IMPORTANTE: z-index alto para nav-bar */
+.nav-bar {
+  background: linear-gradient(90deg, rgba(11, 61, 145, 0.95) 0%, rgba(30, 144, 255, 0.85) 50%, rgba(11, 61, 145, 0.95) 100%);
+  border-bottom: 1px solid var(--nasa-cyan);
+  backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 9999;
+}
+
+.nav-btn {
+  background: transparent;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.nav-btn:hover::before {
+  left: 100%;
+}
+
+.nav-btn:hover {
+  background: rgba(79, 195, 247, 0.3);
+  text-shadow: 0 0 10px var(--nasa-cyan);
+}
+
+.nav-btn:active {
+  background: rgba(79, 195, 247, 0.15);
+  opacity: 0.7;
+  transform: scale(0.98);
+}

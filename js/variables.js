@@ -4,6 +4,7 @@ export const appVariables = {
   clientes: JSON.parse(localStorage.getItem("clientes")) || [], // lista de clientes
   currentLanguage: localStorage.getItem('language') || 'es', // definicion de lenguaje por defecto
   cliente_actual: null, // datos de cliente para regeneracion de certificado
+  delay: 5000, // retraso para despliegue de mensajes
 
   translations: {
     es: {
@@ -45,7 +46,9 @@ export const appVariables = {
       descarga_titulo: "¡Tu Certificado está Listo!",
       descarga_btn: "Descargar Certificado",
       error_campos: "Por favor, completa todos los campos requeridos",
-      error_certificado: "Por favor, selecciona un certificado primero"
+      error_certificado: "Por favor, selecciona un certificado primero",
+
+      nombre_placeholder: "Tu nombre"
     },
     en: {
       tagline: "Explore the sky, choose your astronomical object and make it yours.",
@@ -86,7 +89,9 @@ export const appVariables = {
       descarga_titulo: "Your Certificate is Ready!",
       descarga_btn: "Download Certificate",
       error_campos: "Please fill in all required fields",
-      error_certificado: "Please select a certificate first"
+      error_certificado: "Please select a certificate first",
+
+      nombre_placeholder: "Your name"
     },
     pt: {
       tagline: "Explore o céu, escolha seu objeto astronômico e faça-o seu.",
@@ -127,7 +132,9 @@ export const appVariables = {
       descarga_titulo: "Seu Certificado está Pronto!",
       descarga_btn: "Baixar Certificado",
       error_campos: "Por favor, preencha todos os campos obrigatórios",
-      error_certificado: "Por favor, selecione um certificado primeiro"
+      error_certificado: "Por favor, selecione um certificado primeiro",
+
+      nombre_placeholder: "Seu nome"
     }
   }
 }

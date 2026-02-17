@@ -3,7 +3,6 @@ import { appVariables } from "./variables.js";
 // ==================== FUNCIONES AUXILIARES ====================
 export function rastrearPedido() {
   const input = document.getElementById('trackingInput');
-  //const result = document.getElementById('trackingResult');
   const searchId = input.value.trim().toUpperCase();
   
   fetch(`${"https://script.google.com/macros/s/AKfycbxIrdP_fXuSI2iJlBLTRlYPB1sBnhbf7zwv45lQVmaMGaWsbwVgyB828rrcv4nVT_x5QQ/exec"}?id=${searchId}`)
@@ -13,8 +12,6 @@ export function rastrearPedido() {
     })
     .catch(console.error);
 }
-
-// let cliente_actual = null;
 
 function regenCertificado(data, sid) {
   const result = document.getElementById('trackingResult');

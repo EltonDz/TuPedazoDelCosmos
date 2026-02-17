@@ -1,8 +1,4 @@
 // ==================== CARGAR LISTA DE CERTIFICADOS RECIENTES ====================
-// document.addEventListener("DOMContentLoaded", function () {
-//   mostrarPrimerosReg();
-// });
-
 export function mostrarPrimerosReg() {
   fetch("https://script.google.com/macros/s/AKfycbxIrdP_fXuSI2iJlBLTRlYPB1sBnhbf7zwv45lQVmaMGaWsbwVgyB828rrcv4nVT_x5QQ/exec?action=getFirst10")
     .then(response => response.json())

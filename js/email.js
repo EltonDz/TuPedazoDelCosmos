@@ -1,3 +1,6 @@
+import { appVariables } from "./variables.js";
+
+// ==================== FUNCIONES DE MODAL ====================
 export function sendEmail() {
   const form = document.getElementById("contactForm");
 
@@ -8,9 +11,6 @@ export function sendEmail() {
       nombre: document.getElementById("nombre").value.trim(),
       email: document.getElementById("email").value.trim(),
       mensaje: document.getElementById("mensaje").value
-      // name: form.nombre.value.trim(),
-      // email: form.email.value.trim(),
-      // message: form.message.value
     };
 
     const errors = validateContactForm(formData);
@@ -22,16 +22,18 @@ export function sendEmail() {
     if (Object.keys(errors).length > 0) {
       highlightErrors(errors);
       showFormMessage("Por favor, completa todos los campos");
-      return;
+      return false;
     }
 
     try {
       await sendContactEmail(formData);
       showFormMessage("¡Mensaje enviado!", false);
       form.reset();
+      return true;
     } catch (error) {
       showFormMessage("No se pudo mandar mensaje.");
       console.error(error);
+      return false;
     }
 
   });
@@ -60,7 +62,6 @@ function validateContactForm({nombre,email,mensaje}) {
 function showFormMessage(text, isError = true) {
   const messageDiv = document.getElementById("formMessageContact");
 
-  // messageDiv.textContent = text;
   if (!isError) {
     messageDiv.style.color = "green";
     messageDiv.style.background = 'rgba(34, 197, 94, 0.2)';
@@ -76,11 +77,10 @@ function showFormMessage(text, isError = true) {
   setTimeout(() => {
     messageDiv.textContent = "";
     messageDiv.classList.add("hidden");
-  }, 4000);
+  }, appVariables.delay);
 }
 
 function highlightErrors(errors) {
-  console.log(Object.keys(errors));
   Object.keys(errors).forEach(field => {
     document.getElementById(field).classList.add("input-error");
   });
@@ -88,10 +88,8 @@ function highlightErrors(errors) {
 
 async function sendContactEmail(data) {
   const params = new URLSearchParams(data);
-  console.log(params.get("nombre"));
-  console.log(params.get("email"));
 
-  const response = await fetch("https://script.google.com/macros/s/AKfycbxIrdP_fXuSI2iJlBLTRlYPB1sBnhbf7zwv45lQVmaMGaWsbwVgyB828rrcv4nVT_x5QQ/exec?action=sendEmail", {
+  await fetch("https://script.google.com/macros/s/AKfycbxIrdP_fXuSI2iJlBLTRlYPB1sBnhbf7zwv45lQVmaMGaWsbwVgyB828rrcv4nVT_x5QQ/exec?action=sendEmail", {
     method: "POST",
     body: params,
   })

@@ -2,7 +2,6 @@ import { appVariables } from "./variables.js";
 import { rastrearPedido, regenerarPDF} from "./regenerarPDF.js"
 import { sendEmail } from "./email.js";
 
-
 // ==================== FUNCIONES DE MODAL ====================
 export function openModal(section) {
   console.log('Abriendo modal:', section);
@@ -101,8 +100,7 @@ export function openModal(section) {
   if (section === 'contacto') {
     document.getElementById("sendContact")
       .addEventListener("click", () => {
-        sendEmail();
-        // closeModal();
+        if (sendEmail()) { closeModal(); }
     });
   }
 }
@@ -116,7 +114,22 @@ export function closeModalOutside(event) {
   if (event.target.id === 'modal') closeModal();
 }
 
-// document.addEventListener('keydown', (e) => {
-//   if (e.key === 'Escape') closeModal();
-// });
+function cargarListaPedidos() {
+  const container = document.getElementById('pedidosList');
+  if (!container) return;
+  
+  if (appVariables.clientes.length === 0) {
+    container.innerHTML = '<p class="text-gray-400">No hay pedidos registrados.</p>';
+    return;
+  }
 
+  const firstFive = appVariables.clientes.slice(-3)
+  
+  container.innerHTML = firstFive.map(c => `
+    <div class="nasa-card p-3 rounded-lg">
+      <p class="text-blue-300 font-semibold">${c.nuevoNombre}</p>
+      <p class="text-sm text-gray-400">Por: ${c.nombre} | ${c.fecha}</p>
+      <p class="text-xs text-gray-500">ID: ${c.objeto}</p>
+    </div>
+  `).join('');
+}

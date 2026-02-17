@@ -64,3 +64,9 @@ body::before {
 .glow-text {
   text-shadow: 0 0 10px var(--nasa-cyan), 0 0 20px var(--nasa-glow);
 }
+
+.title-container {
+  display: flex;
+  align-items: center; /* vertical alignment */
+  gap: 8px;            /* space between icon and title */
+}

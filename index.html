@@ -4,8 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TuPedazoDeCosmos.com</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
-  <!-- <link rel="stylesheet" href="css/styles.css"> -->
+
   <link rel="stylesheet" href="css/html-labels.css">
   <link rel="stylesheet" href="css/certificate.css">
   <link rel="stylesheet" href="css/download-panel.css">
@@ -18,6 +17,8 @@
   <link rel="stylesheet" href="css/nasa-btn.css">
   <link rel="stylesheet" href="css/nav-bar.css">
   <link rel="stylesheet" href="css/step-process.css">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
   <script src="https://www.paypal.com/sdk/js?client-id=Ae78PjwLRmjiwKIbKWg3OA4Achz9gC24B2j1KcMvr1K9KiG1CeXEyzqXvtM-XOBHODi4K8p6DZk1Di0r&currency=USD"></script>
@@ -47,23 +48,18 @@
   <!-- Barra de Navegación -->
   <nav class="nav-bar py-2">
     <div class="container mx-auto flex flex-wrap justify-center items-center gap-2 md:gap-4">
-      <!-- <button class="nav-btn" onclick="openModal('inicio')"> -->
       <button class="nav-btn" id="modal-inicio">
         <i class="fas fa-home mr-2"></i><span data-translate="nav_inicio">Inicio</span>
       </button>
-      <!-- <button class="nav-btn" onclick="openModal('rastrear')"> -->
       <button class="nav-btn" id="modal-rastrear">
         <i class="fas fa-search-location mr-2"></i><span data-translate="nav_rastrear">Rastrear</span>
       </button>
-      <!-- <button class="nav-btn" onclick="openModal('faq')"> -->
       <button class="nav-btn" id="modal-faq">
         <i class="fas fa-question-circle mr-2"></i><span data-translate="nav_faq">FAQ</span>
       </button>
-      <!-- <button class="nav-btn" onclick="openModal('pedido')"> -->
       <button class="nav-btn" id="modal-pedido">
         <i class="fas fa-shopping-cart mr-2"></i><span data-translate="nav_pedido">Pedido</span>
       </button>
-      <!-- <button class="nav-btn" onclick="openModal('contacto')"> -->
       <button class="nav-btn" id="modal-contacto">
         <i class="fas fa-envelope mr-2"></i><span data-translate="nav_contacto">Contacto</span>
       </button>
@@ -75,15 +71,12 @@
           <i class="fas fa-chevron-down ml-2 text-xs"></i>
         </button>
         <div class="language-dropdown-content">
-          <!-- <div class="language-option" onclick="changeLanguage('es')"> -->
           <div class="language-option" id="btn-es">
             <span>🇪🇸</span> Español
           </div>
-          <!-- <div class="language-option" onclick="changeLanguage('en')"> -->
           <div class="language-option" id="btn-en">
             <span>🇺🇸</span> English
           </div>
-          <!-- <div class="language-option" onclick="changeLanguage('pt')"> -->
           <div class="language-option" id="btn-pt">
             <span>🇧🇷</span> Português
           </div>
@@ -93,10 +86,8 @@
   </nav>
 
   <!-- Modal / Ventana Emergente -->
-  <!-- <div id="modal" class="modal-overlay" onclick="closeModalOutside(event)"> -->
   <div id="modal" class="modal-overlay">
     <div class="modal-content" onclick="event.stopPropagation()">
-      <!-- <button class="modal-close" onclick="closeModal()"> -->
       <button id="modal-cls" class="modal-close">
         <i class="fas fa-times"></i>
       </button>
@@ -117,9 +108,12 @@
 
     <!-- Instrucciones -->
     <div class="nasa-card p-6 rounded-lg">
-      <h2 class="text-xl font-semibold mb-4 text-blue-300 glow-text" data-translate="instrucciones_titulo">
-        <i class="fas fa-star mr-2"></i>¿Cómo seleccionar tu estrella?
-      </h2>
+      <div class="title-container">
+        <i class="fas fa-star mr-2 text-xl font-semibold mb-4 text-blue-300 glow-text"></i>
+        <h2 class="text-xl font-semibold mb-4 text-blue-300 glow-text" data-translate="instrucciones_titulo">
+          ¿Cómo seleccionar tu estrella?
+        </h2>
+      </div>
       <ol class="list-decimal pl-5 space-y-2 text-gray-200">
         <li data-translate="instruccion_1">Navega por el cielo estelar con el visor interactivo.</li>
         <li data-translate="instruccion_2">Haz clic sobre el objeto que te interese.</li>
@@ -133,9 +127,8 @@
       <h3 class="text-xl font-semibold text-center text-blue-300 mb-4" data-translate="form_titulo">
         <i class="fas fa-certificate mr-2"></i>Registra tu Estrella
       </h3>
-      <input type="text" name="nombre" placeholder="Tu nombre" class="nasa-input" required />
+      <input type="text" name="nombre" placeholder="Tu nombre" data-translate-placeholder="nombre_placeholder" class="nasa-input" required />
       <input type="text" name="objeto" placeholder="Nombre del objeto (estrella original)" class="nasa-input" required />
-      <!-- <input type="text" name="ra" placeholder="RA (ej. 14h 15m 39s)" class="nasa-input" required /> -->
       <div class="coord-grid">
         <label class="degree-lab text-xl font-semibold mb-4 text-blue-300 glow-text">RA:</label>
         <input type="text" name="ra1" class="nasa-input-ra-dec" required>
@@ -147,7 +140,6 @@
         <input type="text" name="ra3" class="nasa-input-ra-dec" required>
 
         <label id="seg_ra" class="degree-ra">s</label>
-        <!--<input type="text" name="dec" placeholder="Dec (ej. -60º 50' 2&quot;)" class="nasa-input" required /> -->
         <label class="degree-lab text-xl font-semibold mb-4 text-blue-300 glow-text">DEC:</label>
         <input type="text" name="dec1" class="nasa-input-ra-dec" required>
 
@@ -162,7 +154,7 @@
       <input type="text" name="magnitud" placeholder="Magnitud aparente (ej. 4.5)" class="nasa-input" />
       <input type="text" name="nuevoNombre" placeholder="Renombra tu estrella" class="nasa-input" required />
       <div class="flex flex-col gap-4 items-center mt-4">
-        <button type="button" class="nasa-btn w-full" onclick="validarYMostrarCertificados()">
+        <button type="button" class="nasa-btn w-full" id="validarCertificado">
           <i class="fas fa-arrow-right mr-2"></i>Continuar - Elegir Certificado
         </button>
       </div>
@@ -184,6 +176,7 @@
       <a href="https://tupedazodelcosmos.com" target="_blank" class="link-pedazo-cosmos">TuPedazoDelCosmos.com</a>
        - <span data-translate="footer_derechos">Todos los derechos reservados</span></p>
   </footer>
+
   <script type="module" src="js/app.js"></script>
 </body>
 </html>

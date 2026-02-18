@@ -4,7 +4,6 @@ import { changeLanguage, applyTranslations } from "./traducciones.js";
 import { openModal, closeModal, closeModalOutside } from "./modal.js"
 import { validarYMostrarCertificados } from "./sel-certificado.js";
 
-
 // ==================== TRADUCCIONES ====================
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -75,6 +74,5 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener('DOMContentLoaded', function() {
   console.log('Página cargada');
   applyTranslations();
-  // actualizarListaClientes();
   mostrarPrimerosReg();
 });

@@ -1,6 +1,7 @@
 import { closeModal } from './modal.js';
 import { appVariables } from './variables.js'
 import { procesarCompraExitosa } from './generar-certificado.js';
+import { applyTranslations } from './traducciones.js';
 
 // ==================== VALIDAR FORMULARIO Y MOSTRAR CERTIFICADOS ====================
 export function validarYMostrarCertificados() {
@@ -65,10 +66,10 @@ function mostrarSeleccionCertificados() {
     <h2 class="modal-title"><i class="fas fa-certificate mr-2"></i>${t.cert_titulo}</h2>
     
     <div class="process-steps">
-      <div class="step completed"><span class="step-number">✓</span> Datos</div>
-      <div class="step active"><span class="step-number">2</span> Certificado</div>
-      <div class="step"><span class="step-number">3</span> Pago</div>
-      <div class="step"><span class="step-number">4</span> Descarga</div>
+      <div class="step completed"><span class="step-number">✓</span> <span data-translate="pasos_proceso_datos">Datos</span></div>
+      <div class="step active"><span class="step-number">2</span> <span data-translate="pasos_proceso_certificado">Certificado</span></div>
+      <div class="step"><span class="step-number">3</span> <span data-translate="pasos_proceso_pago">Pago</span></div>
+      <div class="step"><span class="step-number">4</span> <span data-translate="pasos_proceso_descarga">Descarga</span></div>
     </div>
     
     <p class="text-gray-300 mb-4">${t.cert_descripcion}</p>
@@ -77,7 +78,7 @@ function mostrarSeleccionCertificados() {
       ${[1,2,3,4].map(i => `
         <div class="certificate-option" id="cert-${i}">
           <img src="assets/imgs/cert-${i}.png" alt="Certificado ${i}">
-          <div class="certificate-label">Estilo ${i}</div>
+          <div class="certificate-label">${t.pasos_elegir_estilo} ${i}</div>
           <div class="certificate-check"><i class="fas fa-check"></i></div>
         </div>
       `).join('')}
@@ -85,10 +86,10 @@ function mostrarSeleccionCertificados() {
     
     <div class="flex justify-between mt-6">
       <button class="nasa-btn" id="volverForm">
-        <i class="fas fa-arrow-left mr-2"></i>Volver
+        <i class="fas fa-arrow-left mr-2"></i>${t.boton_volver_form}
       </button>
       <button class="nasa-btn" id="continuarPag">
-        Continuar al Pago<i class="fas fa-arrow-right ml-2"></i>
+        ${t.boton_continuar_pago}<i class="fas fa-arrow-right ml-2"></i>
       </button>
     </div>
 
@@ -124,7 +125,7 @@ function mostrarSeleccionCertificados() {
         .addEventListener("click", () => {
           continuarAlPago();
   });
-
+  applyTranslations();
   // document.getElementById("modal-body")
   //   .addEventListener("click", function (event) {
   //     if (event.target.tagName === "BUTTON") {
@@ -165,32 +166,32 @@ function mostrarPanelPago() {
     <h2 class="modal-title"><i class="fas fa-credit-card mr-2"></i>${t.pago_titulo}</h2>
     
     <div class="process-steps">
-      <div class="step completed"><span class="step-number">✓</span> Datos</div>
-      <div class="step completed"><span class="step-number">✓</span> Certificado</div>
-      <div class="step active"><span class="step-number">3</span> Pago</div>
-      <div class="step"><span class="step-number">4</span> Descarga</div>
+      <div class="step completed"><span class="step-number">✓</span> ${t.pasos_proceso_datos}</div>
+      <div class="step completed"><span class="step-number">✓</span> ${t.pasos_proceso_certificado}</div>
+      <div class="step active"><span class="step-number">3</span> ${t.pasos_proceso_pago}</div>
+      <div class="step"><span class="step-number">4</span> ${t.pasos_proceso_descarga}</div>
     </div>
     
     <div class="nasa-card p-4 mb-6">
-      <h3 class="text-lg font-semibold mb-3 text-blue-300">Resumen de tu pedido:</h3>
+      <h3 class="text-lg font-semibold mb-3 text-blue-300">${t.resumen_pedido}:</h3>
       <div class="resumen-item">
-        <span>Estrella:</span>
+        <span>${t.resumen_pedido_estrella}:</span>
         <span class="text-yellow-300">"${appVariables.formData.nuevoNombre}"</span>
       </div>
       <div class="resumen-item">
-        <span>Objeto original:</span>
+        <span>${t.resumen_pedido_obj_org}:</span>
         <span>${appVariables.formData.objeto}</span>
       </div>
       <div class="resumen-item">
-        <span>Coordenadas:</span>
+        <span>${t.resumen_pedido_coord}:</span>
         <span>RA: ${appVariables.formData.ra} | Dec: ${appVariables.formData.dec}</span>
       </div>
       <div class="resumen-item">
-        <span>Certificado:</span>
-        <span>Estilo ${appVariables.selectedCertificate}</span>
+        <span>${t.resumen_pedido_cert}:</span>
+        <span>${t.pasos_elegir_estilo} ${appVariables.selectedCertificate}</span>
       </div>
       <div class="resumen-total">
-        <span>Total:</span>
+        <span>${t.resumen_pedido_total}:</span>
         <span>$12.00 USD</span>
       </div>
     </div>
@@ -199,11 +200,12 @@ function mostrarPanelPago() {
     
     <div class="text-center mt-4">
       <button class="text-gray-400 hover:text-white" id="mostrarSelCert">
-        <i class="fas fa-arrow-left mr-2"></i>Volver a elegir certificado
+        <i class="fas fa-arrow-left mr-2"></i>${t.boton_volver_cert}
       </button>
     </div>
   `;
-  
+  applyTranslations();
+
   // Inicializar PayPal en el modal
   setTimeout(() => {
     paypal.Buttons({

@@ -73,7 +73,7 @@ export function openModal(section) {
           <input id="email" type="email" class="nasa-input" placeholder="Tu correo" data-translate-placeholder="correo_email_placeholder">
           <textarea id="mensaje" class="nasa-input" rows="4" placeholder="Tu mensaje..." data-translate-placeholder="mensaje_email_placeholder"></textarea>
           <button type="submit" class="nasa-btn w-full" id="sendContact">
-            <i class="fas fa-paper-plane mr-2"></i><span date-translate="boton_email_enviar">Enviar</span>
+            <i class="fas fa-paper-plane mr-2"></i><span data-translate="boton_email_enviar">Enviar</span>
           </button>
         </form>
         <div id="formMessageContact" class="mt-4 p-4 rounded-lg hidden"></div>

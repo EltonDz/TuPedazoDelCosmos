@@ -43,6 +43,7 @@ export function sendEmail() {
 
 function validateContactForm({nombre,email,mensaje}) {
   const errors = {};
+  const t = appVariables.translations[appVariables.currentLanguage];
 
   if (!nombre.trim()) {
     errors.nombre = "Nombre es campo requerido";
@@ -58,6 +59,7 @@ function validateContactForm({nombre,email,mensaje}) {
     errors.mensaje = "Mensaje es un campo requerido";
   }
 
+  applyTranslations();
   return errors;
 }
 

@@ -65,10 +65,10 @@ function mostrarPanelDescarga() {
   
   modalBody.innerHTML = `
     <div class="process-steps">
-      <div class="step completed"><span class="step-number">✓</span> Datos</div>
-      <div class="step completed"><span class="step-number">✓</span> Certificado</div>
-      <div class="step completed"><span class="step-number">✓</span> Pago</div>
-      <div class="step active"><span class="step-number">4</span> Descarga</div>
+      <div class="step completed"><span class="step-number">✓</span> ${t.pasos_proceso_datos}</div>
+      <div class="step completed"><span class="step-number">✓</span> ${t.pasos_proceso_certificado}</div>
+      <div class="step completed"><span class="step-number">✓</span> ${t.pasos_proceso_pago}</div>
+      <div class="step active"><span class="step-number">4</span> ${t.pasos_proceso_descarga}</div>
     </div>
     
     <div class="download-panel">
@@ -77,14 +77,14 @@ function mostrarPanelDescarga() {
       </div>
       <h2 class="text-2xl font-bold text-green-400 mb-4">${t.descarga_titulo}</h2>
       <p class="text-gray-300 mb-6">
-        ¡Pago confirmado! Tu certificado personalizado está listo.<br>
+        ${t.pago_confirmado}<br>
         <span class="text-yellow-300">ID: ${appVariables.formData.serieID}</span>
       </p>
       <button class="download-btn" id="descargarCert">
         <i class="fas fa-download"></i>
         ${t.descarga_btn}
       </button>
-      <p class="mt-6 text-gray-400">¡Gracias por tu compra!</p>
+      <p class="mt-6 text-gray-400">${t.gracias_compra}</p>
     </div>
   `;
   document.getElementById("descargarCert")

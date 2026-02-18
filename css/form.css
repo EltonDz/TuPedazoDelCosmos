@@ -14,8 +14,6 @@
   border-radius: 8px;
   padding: 10px 6px;
   color: white;
-  /* width: 10%;*/
-  /* box-sizing: border-box;*/
   transition: all 0.3s ease;
 }
 
@@ -24,6 +22,16 @@
   border-color: var(--nasa-cyan);
   box-shadow: 0 0 15px var(--nasa-glow);
   background: rgba(11, 61, 145, 0.5);
+}
+
+.nasa-input:-webkit-autofill,
+.nasa-input:-webkit-autofill:hover,
+.nasa-input:-webkit-autofill:focus,
+.nasa-input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px rgba(11, 61, 145, 0.3) inset,
+                      0 0 15px var(--nasa-glow) !important;
+  -webkit-text-fill-color: #ffffff !important;
+  transition: background-color 9999s ease-in-out 0s;
 }
 
 .nasa-input::placeholder {
@@ -61,7 +69,6 @@
 .degree-lab {
   position: relative;
   top: 7px;   /* move up */
-  /* font-size: 1.2em; optional: slightly smaller */
 }
 
 .degree {
@@ -74,8 +81,6 @@
   display: grid;
   grid-template-columns: 60px 100px 60px 100px 60px 100px 60px;
   align-items: center;
-  /* justify-items: center; */
-  /* place-items: center; */
   gap: 6px 6px;  /* row gap / column gap */
 }
 

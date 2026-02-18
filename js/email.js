@@ -1,4 +1,5 @@
 import { appVariables } from "./variables.js";
+import { applyTranslations } from "./traducciones.js"
 
 // ==================== FUNCIONES DE MODAL ====================
 export function sendEmail() {
@@ -21,22 +22,23 @@ export function sendEmail() {
 
     if (Object.keys(errors).length > 0) {
       highlightErrors(errors);
-      showFormMessage("Por favor, completa todos los campos");
+      showFormMessage("email_completa_campos", true, false);
       return false;
     }
 
     try {
       await sendContactEmail(formData);
-      showFormMessage("¡Mensaje enviado!", false);
+      showFormMessage("email_mensaje_enviado", false, false);
       form.reset();
       return true;
     } catch (error) {
-      showFormMessage("No se pudo mandar mensaje.");
+      showFormMessage("email_no_mensaje");
       console.error(error);
       return false;
     }
 
   });
+  applyTranslations();
 }
 
 function validateContactForm({nombre,email,mensaje}) {
@@ -59,18 +61,23 @@ function validateContactForm({nombre,email,mensaje}) {
   return errors;
 }
 
-function showFormMessage(text, isError = true) {
+function showFormMessage(id, isError = true, errorMensaje = true) {
   const messageDiv = document.getElementById("formMessageContact");
 
   if (!isError) {
     messageDiv.style.color = "green";
     messageDiv.style.background = 'rgba(34, 197, 94, 0.2)';
-    messageDiv.innerHTML = `<div class="mb-2"><i class="fas fa-check-circle mr-2"></i>${text}</div>`;
+    messageDiv.innerHTML = `<div class="mb-2"><i class="fas fa-check-circle mr-2"></i><span data-translate=${id}>¡Mensaje enviado!</span></div>`;
   }
   else {
     messageDiv.style.color = "red";
     messageDiv.style.background = 'rgba(239, 68, 68, 0.2)';
-    messageDiv.innerHTML = `<div class="mb-2">${text}</div>`;
+    if (!errorMensaje) {
+      messageDiv.innerHTML = `<div class="mb-2" data-translate=${id}>Por favor, completa los campos requeridos.</div>`;
+    }
+    else {
+      messageDiv.innerHTML = `<div class="mb-2" data-translate=${id}>Error al enviar mensaje.</div>`;
+    }
   }
   messageDiv.classList.remove("hidden");
 
@@ -78,6 +85,7 @@ function showFormMessage(text, isError = true) {
     messageDiv.textContent = "";
     messageDiv.classList.add("hidden");
   }, appVariables.delay);
+  applyTranslations();
 }
 
 function highlightErrors(errors) {

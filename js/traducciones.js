@@ -1,4 +1,5 @@
 import { appVariables } from "./variables.js";
+import { mostrarPrimerosReg } from "./lista-recientes.js"
 
 // ==================== FUNCIONES DE IDIOMA ====================
 export function changeLanguage(lang) {
@@ -7,6 +8,8 @@ export function changeLanguage(lang) {
   document.documentElement.lang = lang;
   applyTranslations();
   console.log('Idioma cambiado a:', lang);
+  
+  mostrarPrimerosReg();
 }
 
 export function applyTranslations() {

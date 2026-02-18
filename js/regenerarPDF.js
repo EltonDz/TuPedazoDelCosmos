@@ -1,4 +1,5 @@
 import { appVariables } from "./variables.js";
+import { applyTranslations } from "./traducciones.js"
 
 // ==================== FUNCIONES AUXILIARES ====================
 export function rastrearPedido() {
@@ -20,30 +21,32 @@ function regenCertificado(data, sid) {
   pdfButton.style.display = "none";
 
   if (!sid) {
-    result.innerHTML = '<p class="text-yellow-400">Ingresa un número de serie.</p>';
+    result.innerHTML = '<p class="text-yellow-400" data-translate="rastrear_amarillo">Ingresa un número de serie.</p>';
     result.classList.remove('hidden');
     result.style.background = 'rgba(234, 179, 8, 0.2)';
+    applyTranslations();
     return;
   }
 
   if (data.length) {
     appVariables.cliente_actual = data[0];
     result.innerHTML = `
-      <div class="text-green-400 mb-2"><i class="fas fa-check-circle mr-2"></i>¡Encontrado!</div>
-      <p><strong>Cliente:</strong> ${appVariables.cliente_actual.nombre}</p>
-      <p><strong>Objeto:</strong> ${appVariables.cliente_actual.objeto}</p>
-      <p><strong>Estrella:</strong> ${appVariables.cliente_actual.nuevo_nombre}</p>
-      <p><strong>Fecha:</strong> ${appVariables.cliente_actual.fecha}</p>
+      <div class="text-green-400 mb-2"><i class="fas fa-check-circle mr-2"></i><span data-translate="rastrear_encontrado">¡Encontrado!</span></div>
+      <p><strong><span data-translate="rastrear_cliente_enc">Cliente</span>:</strong> ${appVariables.cliente_actual.nombre}</p>
+      <p><strong><span data-translate="rastrear_objeto_enc">Objeto</span>:</strong> ${appVariables.cliente_actual.objeto}</p>
+      <p><strong><span data-translate="rastrear_estrella_enc">Estrella</span>:</strong> ${appVariables.cliente_actual.nuevo_nombre}</p>
+      <p><strong><span data-translate="rastrear_fecha_enc">Fecha</span>:</strong> ${appVariables.cliente_actual.fecha}</p>
     `;
     pdfButton.style.display = "inline-block";
     result.style.background = 'rgba(34, 197, 94, 0.2)';
   } else {
-    result.innerHTML = '<p class="text-red-400">No se encontró ese registro.</p>';
+    result.innerHTML = '<p class="text-red-400" data-translate="rastrear_no_encontrado">No se encontró ese registro.</p>';
     appVariables.cliente_actual = null;
     pdfButton.style.display = "none";
     result.style.background = 'rgba(239, 68, 68, 0.2)';
   }
   result.classList.remove('hidden');
+  applyTranslations();
 }
 
 export async function regenerarPDF() {
